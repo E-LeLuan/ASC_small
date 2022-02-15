@@ -1,0 +1,403 @@
+[
+  {
+    "op": "core/column-removal",
+    "columnName": "mandatory_consent_resp.keys",
+    "description": "Remove column mandatory_consent_resp.keys"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "mandatory_consent_resp.rt",
+    "description": "Remove column mandatory_consent_resp.rt"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_man.thisRepN",
+    "description": "Remove column consent_form_man.thisRepN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_man.thisTrialN",
+    "description": "Remove column consent_form_man.thisTrialN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_man.thisN",
+    "description": "Remove column consent_form_man.thisN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_man.thisIndex",
+    "description": "Remove column consent_form_man.thisIndex"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_man.ran",
+    "description": "Remove column consent_form_man.ran"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "new_questionText",
+    "description": "Remove column new_questionText"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_number",
+    "description": "Remove column consent_number"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "session",
+    "description": "Remove column session"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "date",
+    "description": "Remove column date"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "expName",
+    "description": "Remove column expName"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "psychopyVersion",
+    "description": "Remove column psychopyVersion"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "OS",
+    "description": "Remove column OS"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "frameRate",
+    "description": "Remove column frameRate"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consnet_optional_response.keys",
+    "description": "Remove column consnet_optional_response.keys"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consnet_optional_response.rt",
+    "description": "Remove column consnet_optional_response.rt"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_opt.thisRepN",
+    "description": "Remove column consent_form_opt.thisRepN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_opt.thisTrialN",
+    "description": "Remove column consent_form_opt.thisTrialN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_opt.thisN",
+    "description": "Remove column consent_form_opt.thisN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_opt.thisIndex",
+    "description": "Remove column consent_form_opt.thisIndex"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_form_opt.ran",
+    "description": "Remove column consent_form_opt.ran"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "new_question_optional_Text",
+    "description": "Remove column new_question_optional_Text"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "consent_number_optional",
+    "description": "Remove column consent_number_optional"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "practice_mats.thisRepN",
+    "description": "Remove column practice_mats.thisRepN"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_14.rt",
+    "newColumnName": "RT1",
+    "description": "Rename column key_resp_14.rt to RT1"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_15.rt",
+    "newColumnName": "RT2",
+    "description": "Rename column key_resp_15.rt to RT2"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_16.rt",
+    "newColumnName": "RT3",
+    "description": "Rename column key_resp_16.rt to RT3"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_17.rt",
+    "newColumnName": "RT4",
+    "description": "Rename column key_resp_17.rt to RT4"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_18.rt",
+    "newColumnName": "RT5",
+    "description": "Rename column key_resp_18.rt to RT5"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_19.rt",
+    "newColumnName": "RT6",
+    "description": "Rename column key_resp_19.rt to RT6"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "text_ques",
+    "description": "Remove column text_ques"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "allowedKeys",
+    "description": "Remove column allowedKeys"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "correct_resp",
+    "description": "Remove column correct_resp"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "practice_mats.thisTrialN",
+      "practice_mats.thisN",
+      "practice_mats.thisIndex",
+      "practice_mats.ran",
+      "region_1",
+      "region_2",
+      "region_3",
+      "region_4",
+      "region_5",
+      "item",
+      "condition",
+      "study_number",
+      "question",
+      "moving_on",
+      "allowedkeys",
+      "corr_ans",
+      "out_of",
+      "key_resp_14.keys",
+      "RT1",
+      "key_resp_15.keys",
+      "RT2",
+      "key_resp_16.keys",
+      "RT3",
+      "key_resp_17.keys",
+      "RT4",
+      "key_resp_18.keys",
+      "RT5",
+      "key_resp_19.keys",
+      "RT6",
+      "key_resp_20.keys",
+      "key_resp_20.rt",
+      "reading_trials.thisRepN",
+      "reading_trials.thisTrialN",
+      "reading_trials.thisN",
+      "reading_trials.thisIndex",
+      "reading_trials.ran",
+      "region_6",
+      "condition_number",
+      "item_number",
+      "experiment_number"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "practice_mats.thisIndex",
+      "region_1",
+      "region_2",
+      "region_3",
+      "region_4",
+      "region_5",
+      "item",
+      "condition",
+      "study_number",
+      "question",
+      "moving_on",
+      "allowedkeys",
+      "corr_ans",
+      "out_of",
+      "key_resp_14.keys",
+      "RT1",
+      "key_resp_15.keys",
+      "RT2",
+      "key_resp_16.keys",
+      "RT3",
+      "key_resp_17.keys",
+      "RT4",
+      "key_resp_18.keys",
+      "RT5",
+      "key_resp_19.keys",
+      "RT6",
+      "key_resp_20.keys",
+      "key_resp_20.rt",
+      "reading_trials.thisRepN",
+      "reading_trials.thisTrialN",
+      "reading_trials.thisN",
+      "reading_trials.thisIndex",
+      "reading_trials.ran",
+      "region_6",
+      "condition_number",
+      "item_number",
+      "experiment_number"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "practice_mats.thisIndex",
+    "description": "Remove column practice_mats.thisIndex"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "item",
+    "description": "Remove column item"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "condition",
+    "description": "Remove column condition"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "study_number",
+    "description": "Remove column study_number"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "allowedkeys",
+    "description": "Remove column allowedkeys"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "corr_ans",
+    "description": "Remove column corr_ans"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "reading_trials.thisRepN",
+    "description": "Remove column reading_trials.thisRepN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "reading_trials.thisN",
+    "description": "Remove column reading_trials.thisN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "reading_trials.thisTrialN",
+    "description": "Remove column reading_trials.thisTrialN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "reading_trials.thisIndex",
+    "description": "Remove column reading_trials.thisIndex"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_20.rt",
+    "newColumnName": "Comp_Question_RT",
+    "description": "Rename column key_resp_20.rt to Comp_Question_RT"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_20.keys",
+    "newColumnName": "Comp_Question_Resp",
+    "description": "Rename column key_resp_20.keys to Comp_Question_Resp"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "reading_trials.ran",
+    "description": "Remove column reading_trials.ran"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "moving_on",
+    "description": "Remove column moving_on"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "region_1",
+      "region_2",
+      "region_3",
+      "region_4",
+      "region_5",
+      "question",
+      "out_of",
+      "RT1",
+      "RT2",
+      "RT3",
+      "RT4",
+      "RT5",
+      "RT6",
+      "Comp_Question_Resp",
+      "Comp_Question_RT",
+      "region_6",
+      "condition_number",
+      "item_number",
+      "experiment_number"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "question",
+      "out_of",
+      "RT1",
+      "RT2",
+      "RT3",
+      "RT4",
+      "RT5",
+      "RT6",
+      "Comp_Question_Resp",
+      "Comp_Question_RT",
+      "region_6",
+      "condition_number",
+      "item_number",
+      "experiment_number"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "question",
+    "description": "Remove column question"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "out_of",
+    "description": "Remove column out_of"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "region_6",
+    "description": "Remove column region_6"
+  }
+]

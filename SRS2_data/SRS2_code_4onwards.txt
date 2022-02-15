@@ -1,0 +1,93 @@
+[
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "key_resp_SRS2.keys",
+      "key_resp_SRS2.rt",
+      "SRS2_materials.thisRepN",
+      "SRS2_materials.thisTrialN",
+      "SRS2_materials.thisN",
+      "SRS2_materials.thisIndex",
+      "SRS2_materials.ran",
+      "SRS2_statement",
+      "SRS2_item",
+      "SRS2_scoring_type",
+      "SRS2_treatment_subscale",
+      "SRS2_out_of",
+      "key_resp_20.keys",
+      "key_resp_20.rt",
+      "key_resp_EQ.keys",
+      "key_resp_EQ.rt",
+      "EQ_mats.thisRepN",
+      "EQ_mats.thisTrialN",
+      "EQ_mats.thisN",
+      "EQ_mats.thisIndex",
+      "EQ_mats.ran",
+      "EQ_statement",
+      "EQ_item_number",
+      "EQ_scoring_type",
+      "EQ_out_of"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_SRS2.keys",
+    "newColumnName": "SRS2_resp",
+    "description": "Rename column key_resp_SRS2.keys to SRS2_resp"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_SRS2.rt",
+    "newColumnName": "SRS2_RT",
+    "description": "Rename column key_resp_SRS2.rt to SRS2_RT"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "SRS2_materials.thisRepN",
+    "description": "Remove column SRS2_materials.thisRepN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "SRS2_materials.thisN",
+    "description": "Remove column SRS2_materials.thisN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "SRS2_materials.thisIndex",
+    "description": "Remove column SRS2_materials.thisIndex"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "SRS2_materials.ran",
+    "description": "Remove column SRS2_materials.ran"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "SRS2_statement",
+    "description": "Remove column SRS2_statement"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "SRS2_materials.thisTrialN",
+    "description": "Remove column SRS2_materials.thisTrialN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "SRS2_out_of",
+    "description": "Remove column SRS2_out_of"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "SRS2_resp",
+      "SRS2_RT",
+      "SRS2_item",
+      "SRS2_scoring_type",
+      "SRS2_treatment_subscale"
+    ],
+    "description": "Reorder columns"
+  }
+]

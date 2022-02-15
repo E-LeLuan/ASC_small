@@ -1,0 +1,123 @@
+[
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "key_resp_SRS2.keys",
+      "key_resp_SRS2.rt",
+      "SRS2_materials.thisRepN",
+      "SRS2_materials.thisTrialN",
+      "SRS2_materials.thisN",
+      "SRS2_materials.thisIndex",
+      "SRS2_materials.ran",
+      "SRS2_statement",
+      "SRS2_item",
+      "SRS2_scoring_type",
+      "SRS2_treatment_subscale",
+      "SRS2_out_of",
+      "key_resp_20.keys",
+      "key_resp_20.rt",
+      "key_resp_EQ.keys",
+      "key_resp_EQ.rt",
+      "EQ_mats.thisRepN",
+      "EQ_mats.thisTrialN",
+      "EQ_mats.thisN",
+      "EQ_mats.thisIndex",
+      "EQ_mats.ran",
+      "EQ_statement",
+      "EQ_item_number",
+      "EQ_scoring_type",
+      "EQ_out_of"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_SRS2.keys",
+    "newColumnName": "SRS2_resp",
+    "description": "Rename column key_resp_SRS2.keys to SRS2_resp"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "participant",
+      "key_resp_20.keys",
+      "key_resp_20.rt",
+      "key_resp_EQ.keys",
+      "key_resp_EQ.rt",
+      "EQ_mats.thisRepN",
+      "EQ_mats.thisTrialN",
+      "EQ_mats.thisN",
+      "EQ_mats.thisIndex",
+      "EQ_mats.ran",
+      "EQ_statement",
+      "EQ_item_number",
+      "EQ_scoring_type",
+      "EQ_out_of"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "key_resp_20.keys",
+    "description": "Remove column key_resp_20.keys"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "key_resp_20.rt",
+    "description": "Remove column key_resp_20.rt"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_EQ.keys",
+    "newColumnName": "EQ_resp",
+    "description": "Rename column key_resp_EQ.keys to EQ_resp"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "key_resp_EQ.rt",
+    "newColumnName": "EQ_RT",
+    "description": "Rename column key_resp_EQ.rt to EQ_RT"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "EQ_mats.thisRepN",
+    "description": "Remove column EQ_mats.thisRepN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "EQ_mats.thisTrialN",
+    "description": "Remove column EQ_mats.thisTrialN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "EQ_mats.thisN",
+    "description": "Remove column EQ_mats.thisN"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "EQ_mats.thisIndex",
+    "description": "Remove column EQ_mats.thisIndex"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "EQ_mats.ran",
+    "description": "Remove column EQ_mats.ran"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "EQ_statement",
+    "description": "Remove column EQ_statement"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "EQ_item_number",
+    "newColumnName": "EQ_item",
+    "description": "Rename column EQ_item_number to EQ_item"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "EQ_out_of",
+    "description": "Remove column EQ_out_of"
+  }
+]
