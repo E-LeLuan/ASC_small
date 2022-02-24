@@ -357,3 +357,32 @@ summary(modelR5TD)
 
 anova(model.nullR5TD, modelR5TD)
 
+# Create Total time variable 
+
+#Total time
+# Create Total time variable 
+alldata <- alldata%>%
+  mutate(TT = RT1+RT2+RT3+RT4+RT5+RT6) %>% 
+  mutate(TTms = TT*1000)
+
+view(alldata)
+
+#model.nullR4 <- lmer(R4 ~ (1 + cond | subj) + (1 + cond | item), all_data_join) 
+modelTT <- lmer(TTms ~ condition_number * Group_Status + (1 | participant) + (1 + condition_number | item_number), alldata) 
+summary(modelTT)
+check_model(modelTT)
+qqnorm(residuals(modelTT))
+qqline(residuals(modelTT))
+descdist(alldata$TT)
+#ranef(modelR4)
+
+# Create subset data lists
+ASC_Group <- filter(alldata, Group_Status == "ASC")
+TD_Group <- filter(alldata, Group_Status == "TD")
+
+# Seperate analysis based on group
+modelTT_TD <- lmer(TTms ~ condition_number + (1 | participant) + (1 | item_number), TD_Group) 
+summary(modelTT_TD)                   
+
+modelTT_ASC <- lmer(TTms ~ condition_number + (1 | participant) + (1 | item_number), ASC_Group) 
+summary(modelTT_ASC) 

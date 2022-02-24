@@ -117,13 +117,25 @@ view(alldata)
 
 # Turn seconds into milliseconds to be comparable with previous studies
 alldata <- alldata%>%
+  mutate(RT2ms = RT2*1000)
+alldata <- alldata%>%
+  mutate(RT3ms = RT3*1000)
+alldata <- alldata%>%
   mutate(RT4ms = RT4*1000)
 
 # Double check it has combined and relabeled correctly.
 view(alldata)
 
 
-# RT4ms descriptives
+# Descriptives
+alldata %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT2ms), sd(RT2ms))
+
+alldata %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
+
 alldata %>% 
   group_by(condition_number) %>%
   summarise(mean(RT4ms), sd(RT4ms))
@@ -134,12 +146,29 @@ view(alldata)
 #Visualization
 
 alldata %>% 
-  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Prediciton") +
-  labs(y = "Reading time in ms.", x = "Prediction") +
+  ggplot(aes(x = condition_number, y = RT2ms, colour = Group_Status)) + ggtitle("Manipulation") +
+  labs(y = "Reading time in ms.", x = "Manipulation") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
   guides(scale = 'none')
+
+alldata %>% 
+  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Question") +
+  labs(y = "Reading time in ms.", x = "Question") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = 'none')
+
+alldata %>% 
+  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Indirect Reply") +
+  labs(y = "Reading time in ms.", x = "Indirect Reply") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = 'none')
+
 
 # Some serious outliers may need removing at this point --> need to figure out how to do this!
 
@@ -164,8 +193,60 @@ TD_Group <- filter(alldata, Group_Status == "TD")
 
 # Model assuming normality of residuals maximal structure
 
+
+# Region 2- Manipulation
+#model.nullR3 <- lmer(RT3ms ~ (1 + cond | subj) + (1 + cond | item), all_data_join) 
+modelR2 <- lmer(RT2ms ~ condition_number * Group_Status + (1 | participant) + (1 | item_number), alldata) 
+summary(modelR2)
+check_model(modelR2)
+qqnorm(residuals(modelR2))
+qqline(residuals(modelR2))
+descdist(alldata$RT2ms)
+#ranef(modelR4)
+
+
+# Need to look at the gamma distribution but not sure how to anylsye that or what package need help with it.
+
+# Seperate analysis based on group
+modelR3_TD <- lmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), TD_Group) 
+summary(modelR3_TD)                   
+
+modelR3_ASC <- lmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), ASC_Group) 
+summary(modelR3_ASC)                   
+
+# Region 3- Question
+
 #model.nullR4 <- lmer(R4 ~ (1 + cond | subj) + (1 + cond | item), all_data_join) 
-modelR4 <- lmer(RT4ms ~ condition_number * Group_Status + (1 + condition_number | participant) + (1 + condition_number | item_number), alldata) 
+modelR3 <- lmer(RT3ms ~ condition_number * Group_Status + (1 + condition_number | participant) + (1 + condition_number | item_number), alldata) 
+summary(modelR3)
+check_model(modelR3)
+qqnorm(residuals(modelR3))
+qqline(residuals(modelR3))
+descdist(alldata$RT3ms)
+#ranef(modelR4)
+
+# No singular fit 
+modelR3 <- lmer(RT3ms ~ condition_number * Group_Status + (1 | participant) + (1 | item_number), alldata) 
+summary(modelR3)
+check_model(modelR3)
+qqnorm(residuals(modelR3))
+qqline(residuals(modelR3))
+descdist(alldata$RT3ms)
+
+
+
+# Seperate analysis based on group
+modelR3_TD <- lmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), TD_Group) 
+summary(modelR3_TD)                   
+
+modelR4_ASC <- lmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), ASC_Group) 
+summary(modelR4_ASC)      
+
+
+#Region 4 Indirect Reply
+
+#model.nullR4 <- lmer(R4 ~ (1 + cond | subj) + (1 + cond | item), all_data_join) 
+modelR4 <- lmer(RT4ms ~ condition_number * Group_Status + (1 | participant) + (1 | item_number), alldata) 
 summary(modelR4)
 check_model(modelR4)
 qqnorm(residuals(modelR4))
@@ -174,14 +255,38 @@ descdist(alldata$RT4ms)
 #ranef(modelR4)
 
 
-# Log transformed
-modelR4 <- lmer(RT4ms ~ condition_number * Group_Status + (1 + condition_number | participant) + (1 + condition_number | item_number), alldata) 
-summary(modelR4)
-
 # Seperate analysis based on group
-modelR4_TD <- lmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), TD_Group) 
+modelR4_TD <- lmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), TD_Group) 
 summary(modelR4_TD)                   
 
-modelR4_ASC <- lmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), ASC_Group) 
-summary(modelR4_ASC)                   
+modelR4_ASC <- lmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), ASC_Group) 
+summary(modelR4_ASC)  
 
+
+#Total time
+# Create Total time variable 
+alldata <- alldata%>%
+  mutate(TT = RT1+RT2+RT3+RT4+RT5+RT6) %>% 
+  mutate(TTms = TT*1000)
+
+view(alldata)
+
+#model.nullR4 <- lmer(R4 ~ (1 + cond | subj) + (1 + cond | item), all_data_join) 
+modelTT <- lmer(TTms ~ condition_number * Group_Status + (1 | participant) + (1 + condition_number | item_number), alldata) 
+summary(modelTT)
+check_model(modelTT)
+qqnorm(residuals(modelTT))
+qqline(residuals(modelTT))
+descdist(alldata$TT)
+#ranef(modelR4)
+
+# Create subset data lists
+ASC_Group <- filter(alldata, Group_Status == "ASC")
+TD_Group <- filter(alldata, Group_Status == "TD")
+
+# Seperate analysis based on group
+modelTT_TD <- lmer(TTms ~ condition_number + (1 | participant) + (1 | item_number), TD_Group) 
+summary(modelTT_TD)                   
+
+modelTT_ASC <- lmer(TTms ~ condition_number + (1 | participant) + (1 | item_number), ASC_Group) 
+summary(modelTT_ASC) 
