@@ -8,6 +8,8 @@ library(tidyverse)
 library(buildmer)
 library(performance)
 library(see)
+library(sjPlot)
+library(ggrepel)
 
 set.seed(42)
 
@@ -113,28 +115,131 @@ view(alldata)
 
 # Turn seconds into milliseconds to be comparable with previous studies
 alldata <- alldata%>%
+  mutate(RT3ms = RT3*1000)
+alldata <- alldata%>%
   mutate(RT4ms = RT4*1000)
+alldata <- alldata%>%
+  mutate(RT5ms = RT5*1000)
 
 # Double check it has combined and relabeled correctly.
 view(alldata)
 
-# RT4ms descriptive
+# RT3 & RT4ms descriptive
+alldata %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
+
 alldata %>% 
   group_by(condition_number) %>%
   summarise(mean(RT4ms), sd(RT4ms))
 
+alldata %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
+
 #Plots
 alldata %>% 
-  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Prediciton") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Prediciton") +
   labs(y = "Reading time in ms.", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
   guides(scale = 'none')
 
+alldata %>% 
+  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Question") +
+  labs(y = "Reading time in ms.", x = "Question") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = 'none')
+
+alldata %>% 
+  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reply") +
+  labs(y = "Reading time in ms.", x = "Reply") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = 'none')
 
 # Model assuming normality of residuals maximal structure
 
+
+# Region 3- Prediction
+# With interaction
+model.nullR3 <- lmer(RT3ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
+modelR3 <- lmer(RT3ms ~ condition_number*Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata) 
+
+summary(modelR3)
+
+anova(model.nullR3, modelR3)
+
+#remove group status
+model.nullR3b <- lmer(RT3ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
+modelR3b <- lmer(RT3ms ~ condition_number + (1 + condition_number | participant) + (1 | item_number), alldata) 
+
+summary(modelR3b)
+
+anova(model.nullR3b, modelR3b)
+
+# No singualr fit
+model.nullR3c <- lmer(RT3ms ~ (1 | participant) + (1 | item_number), alldata) 
+modelR3c <- lmer(RT3ms ~ condition_number*Group_Status + (1 | participant) + (1 | item_number), alldata) 
+
+summary(modelR3c)
+
+anova(model.nullR3c, modelR3c)
+
+check_model(modelR3)
+qqnorm(residuals(modelR3))
+qqline(residuals(modelR3))
+descdist(alldata$RT3ms)
+
+
+# Create subset data lists
+ASC_Group <- filter(alldata, Group_Status == "ASC")
+TD_Group <- filter(alldata, Group_Status == "TD")
+
+#Subset descriptives
+ASC_Group %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
+
+TD_Group%>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
+
+ASC_Group %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
+
+TD_Group%>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT4ms), sd(RT4ms))
+
+# Separate models for groups
+
+#ASC
+model.nullR3ASC <- lmer(RT4ms ~ (1 + condition_number| participant) + (1 | item_number), ASC_Group) 
+modelR3ASC <- lmer(RT4ms ~ condition_number + (1 + condition_number| participant) + (1 | item_number), ASC_Group) 
+
+summary(modelR3ASC)
+
+anova(model.nullR3ASC, modelR3ASC)
+
+#TD
+
+model.nullR3TD <- lmer(RT3ms ~ (1 + condition_number | participant) + (1 | item_number), TD_Group) 
+modelR3TD <- lmer(RT3ms ~ condition_number + (1 + condition_number | participant) + (1 | item_number), TD_Group) 
+
+summary(modelR4TD)
+
+anova(model.nullR3TD, modelR3TD)
+
+
+
+
+# Region 4- Question
 # With interaction
 model.nullR4 <- lmer(RT4ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
 modelR4 <- lmer(RT4ms ~ condition_number*Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata) 
@@ -144,12 +249,17 @@ summary(modelR4)
 anova(model.nullR4, modelR4)
 
 #remove group status
-model.nullR42 <- lmer(RT4ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
-modelR42 <- lmer(RT4ms ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata) 
+model.nullR4b <- lmer(RT4ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
+modelR4b <- lmer(RT4ms ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata) 
 
-summary(modelR42)
+summary(modelR4b)
 
-anova(model.nullR42, modelR42)
+anova(model.nullR4b, modelR42)
+
+check_model(modelR4)
+qqnorm(residuals(modelR4))
+qqline(residuals(modelR4))
+descdist(alldata$RT4ms)
 
 # Create subset data lists
 ASC_Group <- filter(alldata, Group_Status == "ASC")
@@ -176,15 +286,74 @@ anova(model.nullR4ASC, modelR4ASC)
 
 #TD
 
-model.nullR4TD <- lmer(RT4ms ~ (1 + condition_number | participant) + (1 | item_number), TD_Group) 
-modelR4TD <- lmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 | item_number), TD_Group) 
+model.nullR4TD <- lmer(RT4ms ~ (1 | participant) + (1 | item_number), TD_Group) 
+modelR4TD <- lmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), TD_Group) 
 
 summary(modelR4TD)
 
 anova(model.nullR4TD, modelR4TD)
 
 
+# Region 5- Reply
+# With interaction ignore singular fit
+model.nullR5 <- lmer(RT5ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
+modelR5 <- lmer(RT3ms ~ condition_number*Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata) 
+
+summary(modelR5)
+
+anova(model.nullR5, modelR5)
+
+#remove group status and singular fit
+model.nullR5b <- lmer(RT5ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
+modelR5b <- lmer(RT5ms ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata) 
+
+summary(modelR5b)
+
+anova(model.nullR5b, modelR5b)
+
+check_model(modelR5)
+qqnorm(residuals(modelR5))
+qqline(residuals(modelR5))
+descdist(alldata$RT5ms)
 
 
+# Create subset data lists
+ASC_Group <- filter(alldata, Group_Status == "ASC")
+TD_Group <- filter(alldata, Group_Status == "TD")
 
+#Subset descriptives
+ASC_Group %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
+
+TD_Group%>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
+
+ASC_Group %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
+
+TD_Group%>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
+
+# Separate models for groups
+
+#ASC
+model.nullR5ASC <- lmer(RT5ms ~ (1 + condition_number| participant) + (1 | item_number), ASC_Group) 
+modelR5ASC <- lmer(RT5ms ~ condition_number + (1 + condition_number| participant) + (1 | item_number), ASC_Group) 
+
+summary(modelR5ASC)
+
+anova(model.nullR5ASC, modelR5ASC)
+
+#TD
+
+model.nullR5TD <- lmer(RT5ms ~ (1 + condition_number | participant) + (1 | item_number), TD_Group) 
+modelR5TD <- lmer(RT5ms ~ condition_number + (1 + condition_number | participant) + (1 | item_number), TD_Group) 
+
+summary(modelR5TD)
+
+anova(model.nullR5TD, modelR5TD)
 
