@@ -261,6 +261,10 @@ qqnorm(residuals(modelR4))
 qqline(residuals(modelR4))
 descdist(alldata$RT4ms)
 
+#Gamma
+modelR4b <- glmer(RT4ms ~ condition_number * Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata, family = Gamma) 
+summary(modelR4b)
+
 # Create subset data lists
 ASC_Group <- filter(alldata, Group_Status == "ASC")
 TD_Group <- filter(alldata, Group_Status == "TD")
@@ -305,11 +309,18 @@ anova(model.nullR5, modelR5)
 
 #remove group status and singular fit
 model.nullR5b <- lmer(RT5ms ~ (1 + condition_number| participant) + (1 | item_number), alldata) 
-modelR5b <- lmer(RT5ms ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), alldata) 
+modelR5b <- lmer(RT5ms ~ condition_number +  (1 + condition_number | participant) + (1 | item_number), alldata) 
 
 summary(modelR5b)
 
 anova(model.nullR5b, modelR5b)
+
+
+modelR5bg <- glmer(RT5ms ~ condition_number * Group_Status +  (1 | participant), alldata, family = Gamma) 
+summary(modelR5bg)
+
+modelR5bg2 <- glmer(RT5ms ~ condition_number * Group_Status + (1 | item_number), alldata, family = Gamma) 
+summary(modelR5bg2)
 
 check_model(modelR5)
 qqnorm(residuals(modelR5))
