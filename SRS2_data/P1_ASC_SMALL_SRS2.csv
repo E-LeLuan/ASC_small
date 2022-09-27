@@ -1,4 +1,4 @@
-participant,SRS2_resp,SRS2_RT,SRS_2_item,scoring_type,treatment_subscale
+participant,SRS2_resp,SRS2_RT,SRS2_item,SRS2_scoring_type,SRS2_treatment_subscale
 1,3,5.092365,0,positive,mot
 1,3,3.86006,1,positive,awr
 1,2,2.34348,2,negative,mot
