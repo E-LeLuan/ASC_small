@@ -142,16 +142,98 @@ alldata <- alldata %>% mutate(SRS2_tidy = case_when
                                 SRS2_scoring_type == 'negative' &  SRS2_resp == 2 ~ 2,
                                 SRS2_scoring_type == 'negative' &  SRS2_resp == 3 ~ 1,
                                 SRS2_scoring_type == 'negative' &  SRS2_resp == 4 ~ 0,))
-view(alldata)
+#view(alldata)
 
 # It worked!!!!!
 
-# Then we can add this column for each participant to get their individual SRS2 score
-# THIS IS NOT RIGHT! SRS-2 has way more nuances then the EQ so cannot use this sum code.
-SRS2_score <- alldata %>%
-  group_by(participant) %>%
-  summarise_at(vars(SRS2_tidy), list(SRS2_score = sum))
+# Then we can add this column for each participant to get their individual RAW SRS2 score by treatment 
+#subScale and total score and DSM-5 compatible subscales
 
-alldata <- inner_join(alldata, SRS2_score, by = "participant")
+# Total score first
+alldata <- alldata %>% group_by(participant) %>%
+  mutate(total_RAW_score = sum(SRS2_tidy))
+
+# Now individual treatment subscale raw scores
+                                
+alldata <- alldata %>% group_by(participant, SRS2_treatment_subscale) %>% 
+  mutate(treatment_RAW_score = sum(SRS2_tidy))
+
+#Now DSM-5 compatible subscale scores
+#Sort into your subscales of RRB and SCI DSM5 subscales
+alldata <- alldata%>%
+  mutate(DSM5_group = SRS2_treatment_subscale == 'rrb')
+# Rename TRUE FALSE to more meaningful labels.
+alldata$DSM5_group [alldata$DSM5_group == 'TRUE'] <- "RRB"
+alldata$DSM5_group [alldata$DSM5_group == 'FALSE'] <- "SCI"
+#Now get the RAW DSM5 scores
+alldata <- alldata %>% group_by(participant, DSM5_group) %>% 
+  mutate(DSM5_RAW_score = sum(SRS2_tidy))
+
+#view(alldata)
+
+# It worked!!!!!
+
+# Now let's try the total t- scores
+
+# Let'd find the minimum vale so we don't do any extra work
+min(alldata$total_RAW_score)
+max(alldata$total_RAW_score)
+#output min is 18 and the max is 149 so we don't need to input values below for anything less
+
+# Create a duplicate variable of total raw called total t so we don't mess up our original column
+alldata <- alldata %>% mutate(total_t_score = total_RAW_score) 
+view(alldata)
+
+#Why has it only done this for one participants data????????
+
+alldata$total_t_score[alldata$total_t_score > 17 & alldata$total_t_score < 19] <- 42
+alldata$total_t_score[alldata$total_t_score > 20 & alldata$total_t_score < 21] <- 43
+alldata$total_t_score[alldata$total_t_score > 25 & alldata$total_t_score < 27] <- 45
+alldata$total_t_score[alldata$total_t_score > 28 & alldata$total_t_score < 30] <- 46
+alldata$total_t_score[alldata$total_t_score > 31 & alldata$total_t_score < 33] <- 47
+alldata$total_t_score[alldata$total_t_score > 34 & alldata$total_t_score < 36] <- 48
+alldata$total_t_score[alldata$total_t_score > 37 & alldata$total_t_score < 38] <- 49
+alldata$total_t_score[alldata$total_t_score > 39 & alldata$total_t_score < 41] <- 50
+alldata$total_t_score[alldata$total_t_score > 42 & alldata$total_t_score < 44] <- 51
+alldata$total_t_score[alldata$total_t_score > 45 & alldata$total_t_score < 47] <- 52
+alldata$total_t_score[alldata$total_t_score > 48 & alldata$total_t_score < 50] <- 53
+alldata$total_t_score[alldata$total_t_score > 51 & alldata$total_t_score < 53] <- 54
+alldata$total_t_score[alldata$total_t_score > 54 & alldata$total_t_score < 56] <- 55
+alldata$total_t_score[alldata$total_t_score > 57 & alldata$total_t_score < 58] <- 56
+alldata$total_t_score[alldata$total_t_score > 59 & alldata$total_t_score < 61] <- 57
+alldata$total_t_score[alldata$total_t_score > 62 & alldata$total_t_score < 64] <- 58
+alldata$total_t_score[alldata$total_t_score > 65 & alldata$total_t_score < 67] <- 59
+alldata$total_t_score[alldata$total_t_score > 68 & alldata$total_t_score < 70] <- 60
+alldata$total_t_score[alldata$total_t_score > 71 & alldata$total_t_score < 73] <- 61
+alldata$total_t_score[alldata$total_t_score > 74 & alldata$total_t_score < 75] <- 62
+alldata$total_t_score[alldata$total_t_score > 76 & alldata$total_t_score < 78] <- 63
+alldata$total_t_score[alldata$total_t_score > 79 & alldata$total_t_score < 81] <- 64
+alldata$total_t_score[alldata$total_t_score > 82 & alldata$total_t_score < 84] <- 65
+alldata$total_t_score[alldata$total_t_score > 85 & alldata$total_t_score < 87] <- 66
+alldata$total_t_score[alldata$total_t_score > 88 & alldata$total_t_score < 90] <- 67
+alldata$total_t_score[alldata$total_t_score > 91 & alldata$total_t_score < 92] <- 68
+alldata$total_t_score[alldata$total_t_score > 93 & alldata$total_t_score < 95] <- 69
+alldata$total_t_score[alldata$total_t_score > 96 & alldata$total_t_score < 98] <- 70
+alldata$total_t_score[alldata$total_t_score > 99 & alldata$total_t_score < 101] <- 71
+alldata$total_t_score[alldata$total_t_score > 102 & alldata$total_t_score < 104] <- 72
+alldata$total_t_score[alldata$total_t_score > 105 & alldata$total_t_score < 107] <- 73
+alldata$total_t_score[alldata$total_t_score > 108 & alldata$total_t_score < 109] <- 74
+alldata$total_t_score[alldata$total_t_score > 110 & alldata$total_t_score < 112] <- 75
+alldata$total_t_score[alldata$total_t_score > 113 & alldata$total_t_score < 115] <- 76
+alldata$total_t_score[alldata$total_t_score > 116 & alldata$total_t_score < 118] <- 77
+alldata$total_t_score[alldata$total_t_score > 119 & alldata$total_t_score < 121] <- 78
+alldata$total_t_score[alldata$total_t_score > 122 & alldata$total_t_score < 124] <- 79
+alldata$total_t_score[alldata$total_t_score > 125 & alldata$total_t_score < 127] <- 80
+alldata$total_t_score[alldata$total_t_score > 128 & alldata$total_t_score < 129] <- 81
+alldata$total_t_score[alldata$total_t_score > 130 & alldata$total_t_score < 132] <- 82
+alldata$total_t_score[alldata$total_t_score > 133 & alldata$total_t_score < 135] <- 83
+alldata$total_t_score[alldata$total_t_score > 136 & alldata$total_t_score < 138] <- 84
+alldata$total_t_score[alldata$total_t_score > 139 & alldata$total_t_score < 141] <- 85
+alldata$total_t_score[alldata$total_t_score > 142 & alldata$total_t_score < 144] <- 86
+alldata$total_t_score[alldata$total_t_score > 145 & alldata$total_t_score < 146] <- 87
+alldata$total_t_score[alldata$total_t_score > 147 & alldata$total_t_score < 149] <- 88
+alldata$total_t_score[alldata$total_t_score > 150 & alldata$total_t_score < 152] <- 89
+alldata$total_t_score[alldata$total_t_score > 153] <- 90
 
 view(alldata)
+
