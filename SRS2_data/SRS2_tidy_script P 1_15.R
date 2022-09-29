@@ -259,3 +259,9 @@ alldata <- alldata %>%
                                    total_t_score >= 76 & total_t_score <= 90 ~ 'Severe'))
 
 view(alldata)
+
+#Now Individual t scores for treatment subscales
+
+
+#Now Individual t scores for DSM-5 compatible subscales
+
