@@ -560,3 +560,15 @@ view(alldata)
 write.csv(alldata,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\alldata.csv", row.names = TRUE)
 
 # All data extracted and new CSV created called all data created. WHOOP WHOOP!!!!!!!!!
+
+#Let's examine the data a little 
+
+#Let's look at the difference between the two groups
+alldata %>% 
+  group_by(Group_Status) %>%
+  summarise(mean(total_t_score), sd(total_t_score))
+
+#Much lower empathy scores for the ASC group compared to the TD group Let's have a look at this with a t test
+ASC_SRS2_mean <- rnorm(30, mean = 23.7, sd = 10.4)
+TD_SRS2_mean <- rnorm(29, mean = 46.2, sd = 13.4)
+t.test(ASC_SRS2_mean, TD_SRS2_mean, var.equal = TRUE)
