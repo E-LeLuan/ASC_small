@@ -557,4 +557,6 @@ alldata <- alldata %>%
 view(alldata)                                
 
 #Export a CSV of the new data set...
-write.csv(alldata,"Path to export the DataFrame\\File Name.csv", row.names = FALSE)
+write.csv(alldata,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\alldata.csv", row.names = TRUE)
+
+# All data extracted and new CSV created called all data created. WHOOP WHOOP!!!!!!!!!
