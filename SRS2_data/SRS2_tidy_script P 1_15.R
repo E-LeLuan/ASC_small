@@ -173,15 +173,6 @@ alldata <- alldata %>% group_by(participant, DSM5_group) %>%
 
 # It worked!!!!!
 
-
-
-
-
-# ************************************HELP FROM HERE DOWN PLEASE******************************************
-
-
-
-
 # Now let's try the total t- scores. We need to create a variable 'total_t_scores' changing the total_raw_score of
 # participants to a specified value based on a range as seen below.
 
@@ -192,15 +183,13 @@ max(alldata$total_RAW_score)
 
 #Why has it only done this for one participants data???????? grrrrrr
 #alldata['total_t_score'][alldata['total_t_score']> 17 & alldata['total_t_score'] <19] <- 42
-
-
 # Also Doesn't work!!! 
 #alldata <- alldata %>% mutate(total_t_score = case_when(total_RAW_score > 17 & alldata$total_raw_score < 19 ~ '42'))
 
-#It only works for the first participant!! Grrrrrr
 alldata <- alldata %>%
   mutate(total_t_score = case_when(total_RAW_score >= 17 & total_RAW_score <= 19 ~ '42',
                                    total_RAW_score >= 20 & total_RAW_score <= 21 ~ '43',
+                                   total_RAW_score >= 22 & total_RAW_score <= 24 ~ '44',
                                    total_RAW_score >= 25 & total_RAW_score <= 27 ~ '45',
                                    total_RAW_score >= 28 & total_RAW_score <= 30 ~ '46',
                                    total_RAW_score >= 31 & total_RAW_score <= 33 ~ '47',
@@ -253,15 +242,78 @@ alldata <- alldata %>%
 
 #Now lets see according to the t score where do these participants traits sit on the autism spectrum condition
 alldata <- alldata %>%
-  mutate(clinical_range = case_when(total_t_score>= 0 & total_t_score <= 59 ~ 'Within Normal Limits',
+  mutate(overall_clinical_range = case_when(total_t_score>= 0 & total_t_score <= 59 ~ 'Within Normal Limits',
                                    total_t_score >= 60 & total_t_score <= 65 ~ 'Mild',
                                    total_t_score >= 66 & total_t_score <= 75 ~ 'Moderate',
                                    total_t_score >= 76 & total_t_score <= 90 ~ 'Severe'))
 
 view(alldata)
+#It Worked!!!
 
 #Now Individual t scores for treatment subscales
+# Not aure this WILL work 
+#alldata <- alldata %>% group_by(treatment_RAW_score) %>% mutate()
 
 
 #Now Individual t scores for DSM-5 compatible subscales
+
+min(alldata$DSM5_RAW_score)
+max(alldata$DSM5_RAW_score)
+
+alldata <- alldata %>%
+  mutate(DSM5_t_score = case_when(DSM5_group == "SCI" & DSM5_RAW_score == 0 ~ '35',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 1 & DSM5_RAW_score <= 2 ~ '36',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 3 & DSM5_RAW_score <= 5 ~ '37'))
+view(alldata)                                
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 30 ~ '46',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 33 ~ '47',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 36 ~ '48',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 38 ~ '49',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 41 ~ '50',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 44 ~ '51',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 47 ~ '52',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 50 ~ '53',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 53 ~ '54',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 56 ~ '55',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 58 ~ '56',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 61 ~ '57',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 64 ~ '58',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 67 ~ '59',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 70 ~ '60',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 73 ~ '61',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 75 ~ '62',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 78 ~ '63',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 81 ~ '64',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 84 ~ '65',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 87 ~ '66',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 90 ~ '67',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 92 ~ '68',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 95 ~ '69',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 98 ~ '70',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 101 ~ '71',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 104 ~ '72',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 107 ~ '73',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 109 ~ '74',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 112 ~ '75',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 115 ~ '76',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 118 ~ '77',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 121 ~ '78',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 124 ~ '79',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 127 ~ '80',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 129 ~ '81',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 132 ~ '82',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 135 ~ '83',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 138 ~ '84',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 141 ~ '85',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 144 ~ '86',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 146 ~ '87',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 149 ~ '88',
+                                  DSM5_group == "SCI" & DSM5_RAW_score <= 152 ~ '89',
+                                   ))
+
+alldata <- alldata %>% mutate(DSM5_t_score = case_when
+                              (DSM5_treatment_subscale == "SCI" & DSM5_RAW_score = 0 ~ 35,
+                                
+
+#Export a CSV of the new data set...
 
