@@ -1,4 +1,4 @@
-#SRS2 auto tidy script (attempt)
+#SRS2 auto tidy script
 
 
 library(tidyverse)
@@ -566,13 +566,32 @@ write.csv(alldata,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\alldata.c
 # ***************** HELP FROM HERE DOWN *********************** THANKS
 
 #Let's look at the difference between the two groups
-#WHY ARE YOU NOT WORKING
+#WHY ARE YOU NOT WORKING because dbl not num. import the exxported dataset and change dbl to num
+    
 alldata %>% 
   group_by(Group_Status) %>%
   summarise(mean(total_t_score), sd(total_t_score))
+##OUTPUT##
+# A tibble: 2 × 3
+#Group_Status `mean(total_t_score)` `sd(total_t_score)`
+#<chr>                        <dbl>               <dbl>
+#  1 ASC                      72.5                7.85
+#2 TD                         50.3                6.01
 
+#Average ASC in the moderate autistic traits category, average TD in the within normal limits category
 
 #Much lower empathy scores for the ASC group compared to the TD group Let's have a look at this with a t test
-ASC_SRS2_mean <- rnorm(30, mean = , sd = )
-TD_SRS2_mean <- rnorm(30, mean = , sd = )
+ASC_SRS2_mean <- rnorm(30, mean = 72.5, sd = 7.85)
+TD_SRS2_mean <- rnorm(29, mean = 50.3, sd = 6.01)
 t.test(ASC_SRS2_mean, TD_SRS2_mean, var.equal = TRUE) 
+##OUTPUT##
+#Two Sample t-test
+
+#data:  ASC_SRS2_mean and TD_SRS2_mean
+#t = 13.375, df = 57, p-value < 2.2e-16
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  19.20707 25.97127
+#sample estimates:
+#  mean of x mean of y 
+#73.58801  50.99884 
