@@ -247,73 +247,125 @@ alldata <- alldata %>%
                                    total_t_score >= 66 & total_t_score <= 75 ~ 'Moderate',
                                    total_t_score >= 76 & total_t_score <= 90 ~ 'Severe'))
 
-view(alldata)
+#view(alldata)
 #It Worked!!!
 
 #Now Individual t scores for treatment subscales
-# Not aure this WILL work 
-#alldata <- alldata %>% group_by(treatment_RAW_score) %>% mutate()
+# minimum value = 0 RRB & 15 SCI, maximum value = 34 RRB & 117 SCI
+aggregate(treatment_RAW_score ~ SRS2_treatment_subscale, alldata, function(x) min(x))
+aggregate(treatment_RAW_score ~ SRS2_treatment_subscale, alldata, function(x) max(x))
+
+#SRS2_treatment_subscale treatment_RAW_score
+#1                     awr                   1
+#2                     cog                   2
+#3                     com                   2
+#4                     mot                   3
+#5                     rrb                   0
+#1                     awr                  18
+#2                     cog                  29
+#3                     com                  52
+#4                     mot                  28
+#5                     rrb                  34
+
 
 
 #Now Individual t scores for DSM-5 compatible subscales
+# minimum value = 0 RRB & 15 SCI, maximum value = 34 RRB & 117 SCI
+aggregate(DSM5_RAW_score ~ DSM5_group, alldata, function(x) min(x))
+aggregate(DSM5_RAW_score ~ DSM5_group, alldata, function(x) max(x))
 
-min(alldata$DSM5_RAW_score)
-max(alldata$DSM5_RAW_score)
 
 alldata <- alldata %>%
   mutate(DSM5_t_score = case_when(DSM5_group == "SCI" & DSM5_RAW_score == 0 ~ '35',
                                   DSM5_group == "SCI" & DSM5_RAW_score >= 1 & DSM5_RAW_score <= 2 ~ '36',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 3 & DSM5_RAW_score <= 5 ~ '37'))
-view(alldata)                                
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 30 ~ '46',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 33 ~ '47',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 36 ~ '48',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 38 ~ '49',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 41 ~ '50',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 44 ~ '51',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 47 ~ '52',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 50 ~ '53',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 53 ~ '54',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 56 ~ '55',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 58 ~ '56',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 61 ~ '57',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 64 ~ '58',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 67 ~ '59',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 70 ~ '60',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 73 ~ '61',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 75 ~ '62',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 78 ~ '63',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 81 ~ '64',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 84 ~ '65',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 87 ~ '66',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 90 ~ '67',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 92 ~ '68',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 95 ~ '69',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 98 ~ '70',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 101 ~ '71',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 104 ~ '72',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 107 ~ '73',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 109 ~ '74',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 112 ~ '75',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 115 ~ '76',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 118 ~ '77',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 121 ~ '78',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 124 ~ '79',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 127 ~ '80',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 129 ~ '81',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 132 ~ '82',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 135 ~ '83',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 138 ~ '84',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 141 ~ '85',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 144 ~ '86',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 146 ~ '87',
-                                  DSM5_group == "SCI" & DSM5_RAW_score >= 149 ~ '88',
-                                  DSM5_group == "SCI" & DSM5_RAW_score <= 152 ~ '89',
-                                   ))
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 3 & DSM5_RAW_score <= 5 ~ '37',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 6 & DSM5_RAW_score <= 7 ~ '38',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 8 & DSM5_RAW_score <= 9 ~ '39',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 10 & DSM5_RAW_score <= 12 ~ '40',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 13 & DSM5_RAW_score <= 14 ~ '41',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 15 & DSM5_RAW_score <= 16 ~ '42',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 17 & DSM5_RAW_score <= 19 ~ '43',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 20 & DSM5_RAW_score <= 21 ~ '44',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 22 & DSM5_RAW_score <= 23 ~ '45',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 24 & DSM5_RAW_score <= 26 ~ '46',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 27 & DSM5_RAW_score <= 28 ~ '47',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 29 & DSM5_RAW_score <= 30 ~ '48',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 31 & DSM5_RAW_score <= 33 ~ '49',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 34 & DSM5_RAW_score <= 35 ~ '50',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 36 & DSM5_RAW_score <= 37 ~ '51',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 38 & DSM5_RAW_score <= 39 ~ '52',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 40 & DSM5_RAW_score <= 42 ~ '53',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 43 & DSM5_RAW_score <= 44 ~ '54',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 45 & DSM5_RAW_score <= 46 ~ '55',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 47 & DSM5_RAW_score <= 49 ~ '56',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 50 & DSM5_RAW_score <= 51 ~ '57',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 52 & DSM5_RAW_score <= 53 ~ '58',  
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 54 & DSM5_RAW_score <= 56 ~ '59',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 57 & DSM5_RAW_score <= 58 ~ '60',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 59 & DSM5_RAW_score <= 60 ~ '61',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 61 & DSM5_RAW_score <= 63 ~ '62',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 64 & DSM5_RAW_score <= 65 ~ '63',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 66 & DSM5_RAW_score <= 67 ~ '64',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 68 & DSM5_RAW_score <= 70 ~ '65',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 71 & DSM5_RAW_score <= 72 ~ '66',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 73 & DSM5_RAW_score <= 74 ~ '67',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 75 & DSM5_RAW_score <= 77 ~ '68',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 78 & DSM5_RAW_score <= 79 ~ '69',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 80 & DSM5_RAW_score <= 81 ~ '70',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 82 & DSM5_RAW_score <= 84 ~ '71',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 85 & DSM5_RAW_score <= 86 ~ '72',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 87 & DSM5_RAW_score <= 88 ~ '73',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 89 & DSM5_RAW_score <= 91 ~ '74',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 92 & DSM5_RAW_score <= 93 ~ '75',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 94 & DSM5_RAW_score <= 95 ~ '76',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 96 & DSM5_RAW_score <= 97 ~ '77',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 98 & DSM5_RAW_score <= 100 ~ '78',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 101 & DSM5_RAW_score <= 102 ~ '79',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 103 & DSM5_RAW_score <= 104 ~ '80',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 105 & DSM5_RAW_score <= 107 ~ '81',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 108 & DSM5_RAW_score <= 109 ~ '82',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 110 & DSM5_RAW_score <= 111 ~ '83',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 112 & DSM5_RAW_score <= 114 ~ '84',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 115 & DSM5_RAW_score <= 116 ~ '85',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 117 & DSM5_RAW_score <= 118 ~ '86',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 119 & DSM5_RAW_score <= 121 ~ '87',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 122 & DSM5_RAW_score <= 123 ~ '88',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 124 & DSM5_RAW_score <= 125 ~ '89',
+                                  DSM5_group == "SCI" & DSM5_RAW_score >= 126 ~ '90', 
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 0 ~ '40',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 1 ~ '42',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 2 ~ '43',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 3 ~ '45',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 4 ~ '47',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 5 ~ '48',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 6 ~ '50',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 7 ~ '52',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 8 ~ '53',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 9 ~ '55',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 10 ~ '57',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 11 ~ '58',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 12 ~ '60',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 13 ~ '62',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 14 ~ '63',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 15 ~ '65',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 16 ~ '67',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 17 ~ '68',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 18 ~ '70',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 19 ~ '72',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 20 ~ '73',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 21 ~ '75',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 22 ~ '77',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 23 ~ '78',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 24 ~ '80',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 25 ~ '82',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 26 ~ '83',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 27 ~ '85',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 28 ~ '87',
+                                  DSM5_group == "RRB" & DSM5_RAW_score == 29 ~ '88',
+                                  DSM5_group == "RRB" & DSM5_RAW_score >= 30 ~ '90'))
+                    
 
-alldata <- alldata %>% mutate(DSM5_t_score = case_when
-                              (DSM5_treatment_subscale == "SCI" & DSM5_RAW_score = 0 ~ 35,
-                                
+view(alldata)                                
 
 #Export a CSV of the new data set...
 
