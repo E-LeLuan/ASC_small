@@ -125,13 +125,31 @@ alldata <- inner_join(alldata, EQ_score, by = "participant")
 
 view(alldata)
 
+
+#Export a CSV of the new data set...
+write.csv(alldata,"//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data\\alldata.csv", row.names = TRUE)
+
 #Let's look at the difference between the two groups
 alldata %>% 
   group_by(Group_Status) %>%
   summarise(mean(EQ_score), sd(EQ_score))
 
 #Much lower empathy scores for the ASC group compared to the TD group Let's have a look at this with a t test
-ASC_EQ_mean <- rnorm(60, mean = 23.7, sd = 10.4)
-TD_EQ_mean <- rnorm(60, mean = 46.2, sd = 13.4)
+ASC_EQ_mean <- rnorm(60, mean = 24.5, sd = 10.1)
+TD_EQ_mean <- rnorm(60, mean = 50.9, sd = 11.8)
 t.test(ASC_EQ_mean, TD_EQ_mean, var.equal = TRUE)
+
+#Two Sample t-test
+
+#data:  ASC_EQ_mean and TD_EQ_mean
+#t = -17.655, df = 118, p-value < 2.2e-16
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  -35.76538 -28.55137
+#sample estimates:
+#  mean of x mean of y 
+#20.21738  52.37576 
+
+### alldata <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data/alldata.csv")
+
 
