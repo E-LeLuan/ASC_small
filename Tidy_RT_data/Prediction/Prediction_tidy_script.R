@@ -157,18 +157,34 @@ alldata_Pred_RT %>%
   group_by(condition_number) %>%
   summarise(mean(RT4), sd(RT4))
 # Model assuming normality of residuals maximal structure
+
+#set condition as a factor doesnt make model run
+#alldata_Pred_RT$condition_number <- as.factor(alldata_Pred_RT$condition_number)
+#alldata_Pred_RT$participant <- as.factor(alldata_Pred_RT$participant)
+#alldata_Pred_RT$item_number <- as.factor(alldata_Pred_RT$item_number)
+
+alldata_Pred_RT <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction/alldata_Pred_RT.csv", 
+                            col_types = cols(RT1 = col_number(), 
+                                             RT2 = col_number(), RT3 = col_number(), 
+                                             RT4 = col_number(), RT5 = col_number(), 
+                                             RT6 = col_number(), Comp_Question_RT = col_number(), 
+                                             item_number = col_number()))
+
 #model.nullR4 <- lmer(RT4 ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
 modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
                  REML = TRUE) 
 summary(modelRT4)
 
+#For some reason the model wont run "Error in diag(Lambdat) : object 'R_sparse_diag_get' not found" Have posted on stacoverflow to get some advice.
+
 #anova(modelR4, model.nullR4)
 
 #All the data for this model looks pretty normal.
-check_model(modelR4)
-#qqnorm(residuals(modelR4))
-#qqline(residuals(modelR4))
-descdist(alldata_Pred_RT$R4)
+check_model(modelRT4)
+#qqnorm(residuals(modelRT4))
+#qqline(residuals(modelRT4))
+descdist(alldata_Pred_RT$RT4)
+
 
 #Export a CSV of the new data set...
 write.csv(alldata_Pred_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
