@@ -98,7 +98,7 @@ alldata_Pred_RT <- alldata_Pred_RT%>%
 # Rename TRUE FALSE to more meaningful labels.
 alldata_Pred_RT$Group_Status[alldata_Pred_RT$Group_Status == 'TRUE'] <- "ASC"
 alldata_Pred_RT$Group_Status[alldata_Pred_RT$Group_Status == 'FALSE'] <- "TD"
-view(alldata_Pred_RT)
+#view(alldata_Pred_RT)
 
 #Export a CSV of the new data set...
 write.csv(alldata_Pred_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
@@ -113,6 +113,6 @@ alldata_SRS2 <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data/all
 
 all_data_join <- inner_join(alldata_Pred_RT, alldata_EQ, by = "participant")
 all_data_join <- inner_join(all_data_join, alldata_SRS2, by = "participant")
-view(all_data_join)
+#view(all_data_join)
 
 
