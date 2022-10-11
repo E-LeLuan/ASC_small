@@ -72,7 +72,7 @@ P60_ASC_SMALL_EQ <- read_csv("EQ_data/P60_ASC_SMALL_EQ.csv")
 
 # Combining the individual data spreadsheets into one data frame.
 
-alldata <- rbind (P1_ASC_SMALL_EQ, P2_ASC_SMALL_EQ, P3_ASC_SMALL_EQ,P4_ASC_SMALL_EQ, P5_ASC_SMALL_EQ,
+alldata_EQ <- rbind (P1_ASC_SMALL_EQ, P2_ASC_SMALL_EQ, P3_ASC_SMALL_EQ,P4_ASC_SMALL_EQ, P5_ASC_SMALL_EQ,
                   P6_ASC_SMALL_EQ, P7_ASC_SMALL_EQ, P8_ASC_SMALL_EQ, P9_ASC_SMALL_EQ, P10_ASC_SMALL_EQ,
                   P11_ASC_SMALL_EQ, P12_ASC_SMALL_EQ, P13_ASC_SMALL_EQ, P14_ASC_SMALL_EQ, P15_ASC_SMALL_EQ,
                   P16_ASC_SMALL_EQ,P17_ASC_SMALL_EQ, P18_ASC_SMALL_EQ, P19_ASC_SMALL_EQ,P20_ASC_SMALL_EQ,
@@ -84,15 +84,15 @@ alldata <- rbind (P1_ASC_SMALL_EQ, P2_ASC_SMALL_EQ, P3_ASC_SMALL_EQ,P4_ASC_SMALL
                   P51_ASC_SMALL_EQ, P52_ASC_SMALL_EQ, P53_ASC_SMALL_EQ, P54_ASC_SMALL_EQ, P55_ASC_SMALL_EQ,P56_ASC_SMALL_EQ,
                   P57_ASC_SMALL_EQ, P58_ASC_SMALL_EQ,P59_ASC_SMALL_EQ, P60_ASC_SMALL_EQ)
 
-#view(alldata)
+#view(alldata_EQ)
 
-alldata <- alldata%>%
+alldata_EQ <- alldata_EQ%>%
   mutate(Group_Status = participant <= 30)
 
 # Rename TRUE FALSE to more meaningful labels.
-alldata$Group_Status[alldata$Group_Status == 'TRUE'] <- "ASC"
-alldata$Group_Status[alldata$Group_Status == 'FALSE'] <- "TD"
-view(alldata)
+alldata_EQ$Group_Status[alldata_EQ$Group_Status == 'TRUE'] <- "ASC"
+alldata_EQ$Group_Status[alldata_EQ$Group_Status == 'FALSE'] <- "TD"
+view(alldata_EQ)
 
 # EQ scoring ignore none as these are filler items we are not interested in. 
 
@@ -102,7 +102,7 @@ view(alldata)
 # What the code should do is take items that are negatively scored and turn a 4 into a 2, 
 # turn a 3 into a 1, and turn 1 and 2 into a 0. 
 
-alldata <- alldata %>% mutate(EQ_tidy = case_when 
+alldata_EQ <- alldata_EQ %>% mutate(EQ_tidy = case_when 
                               (EQ_scoring_type == 'positive' &  EQ_resp == 1 ~ 2, 
                                 EQ_scoring_type == 'positive' &  EQ_resp == 2 ~ 1,
                                 EQ_scoring_type == 'positive' &  EQ_resp == 3 ~ 0,
@@ -112,25 +112,25 @@ alldata <- alldata %>% mutate(EQ_tidy = case_when
                                 EQ_scoring_type == 'negative' &  EQ_resp == 2 ~ 0,
                                 EQ_scoring_type == 'negative' &  EQ_resp == 3 ~ 1,
                                 EQ_scoring_type == 'negative' &  EQ_resp == 4 ~ 2,))
-view(alldata)
+view(alldata_EQ)
 
 # It worked!!!!!
 
 # Then we can add this column for each participant to get their individual EQ score
-EQ_score <- alldata %>%
+EQ_score <- alldata_EQ %>%
   group_by(participant) %>%
   summarise_at(vars(EQ_tidy), list(EQ_score = sum))
 
-alldata <- inner_join(alldata, EQ_score, by = "participant")
+alldata_EQ <- inner_join(alldata_EQ, EQ_score, by = "participant")
 
-view(alldata)
+view(alldata_EQ)
 
 
 #Export a CSV of the new data set...
-write.csv(alldata,"//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data\\alldata.csv", row.names = TRUE)
+write.csv(alldata_EQ,"//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data\\alldata_EQ.csv", row.names = TRUE)
 
 #Let's look at the difference between the two groups
-alldata %>% 
+alldata_EQ %>% 
   group_by(Group_Status) %>%
   summarise(mean(EQ_score), sd(EQ_score))
 
@@ -150,6 +150,6 @@ t.test(ASC_EQ_mean, TD_EQ_mean, var.equal = TRUE)
 #  mean of x mean of y 
 #20.21738  52.37576 
 
-### alldata <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data/alldata.csv")
+### alldata_EQ <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data/alldata_EQ.csv")
 
 
