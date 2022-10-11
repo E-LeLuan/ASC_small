@@ -100,6 +100,76 @@ alldata_Pred_RT$Group_Status[alldata_Pred_RT$Group_Status == 'TRUE'] <- "ASC"
 alldata_Pred_RT$Group_Status[alldata_Pred_RT$Group_Status == 'FALSE'] <- "TD"
 #view(alldata_Pred_RT)
 
+#Rename condition_number to more meaningful numbers
+alldata_Pred_RT$condition_number <- recode(alldata_Pred_RT$condition_number, "1" = "facilitated", "2" = "unfacilitated")
+#view(alldata_Pred_RT)
+
+#NO NA's so we don't need to throw away any 0 values like we do in other scripts when there has been a problem
+#with data collection using the eyetracker.
+#sum(is.na(alldata_Pred_RT$RT1))
+#sum(is.na(alldata_Pred_RT$RT2))
+#sum(is.na(alldata_Pred_RT$RT3))
+#sum(is.na(alldata_Pred_RT$RT4))
+#sum(is.na(alldata_Pred_RT$RT5))
+#sum(is.na(alldata_Pred_RT$RT6))
+
+
+# Let's have a look at region 4
+
+#Violin plots
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT4, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(colour = FALSE)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT4, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = FALSE)
+
+#Violin plots by group_status
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT4, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = FALSE)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT4, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = FALSE)
+
+#Descriptives
+alldata_Pred_RT %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT4), sd(RT4))
+# Model assuming normality of residuals maximal structure
+#model.nullR4 <- lmer(RT4 ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
+modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
+                 REML = TRUE) 
+summary(modelRT4)
+
+#anova(modelR4, model.nullR4)
+
+#All the data for this model looks pretty normal.
+check_model(modelR4)
+#qqnorm(residuals(modelR4))
+#qqline(residuals(modelR4))
+descdist(alldata_Pred_RT$R4)
+
 #Export a CSV of the new data set...
 write.csv(alldata_Pred_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
 
