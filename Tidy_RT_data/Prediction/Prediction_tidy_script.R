@@ -161,7 +161,6 @@ alldata_Pred_RT %>%
 
 
 
-#*****HELP FROM LINE 162- Line180
 # Model assuming normality of residuals maximal structure
 
 #set condition as a factor doesnt make model run
@@ -181,8 +180,13 @@ modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) +
                  REML = TRUE) 
 summary(modelRT4)
 
-#For some reason the model wont run "Error in diag(Lambdat) : object 'R_sparse_diag_get' not found" Have posted on stacoverflow to get some advice.
+#add in group_stATUS
+modelRT4 <- lmer(RT4 ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
+                 REML = TRUE) 
+summary(modelRT4)
+# TD driving the effect
 
+# It Worked!!!!!
 
 #anova(modelR4, model.nullR4)
 
