@@ -11,9 +11,11 @@ library(buildmer)
 library(performance)
 library(see)
 library(sjPlot)
+
 #Set seed for random number generation
 set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+
 library(readr)
 P1_ASC_SMALL <- read_csv("Tidy_RT_data/Prediction/P1_ASC_SMALL.csv")
 P2_ASC_SMALL <- read_csv("Tidy_RT_data/Prediction/P2_ASC_SMALL.csv")
@@ -156,19 +158,23 @@ alldata_Pred_RT %>%
 alldata_Pred_RT %>% 
   group_by(condition_number) %>%
   summarise(mean(RT4), sd(RT4))
+
+
+
+#*****HELP FROM LINE 162- Line180
 # Model assuming normality of residuals maximal structure
 
 #set condition as a factor doesnt make model run
 #alldata_Pred_RT$condition_number <- as.factor(alldata_Pred_RT$condition_number)
 #alldata_Pred_RT$participant <- as.factor(alldata_Pred_RT$participant)
 #alldata_Pred_RT$item_number <- as.factor(alldata_Pred_RT$item_number)
-
-alldata_Pred_RT <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction/alldata_Pred_RT.csv", 
-                            col_types = cols(RT1 = col_number(), 
-                                             RT2 = col_number(), RT3 = col_number(), 
-                                             RT4 = col_number(), RT5 = col_number(), 
-                                             RT6 = col_number(), Comp_Question_RT = col_number(), 
-                                             item_number = col_number()))
+#Changing to numeric doesnt help either!!!!!!1
+#alldata_Pred_RT <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction/alldata_Pred_RT.csv", 
+ #                           col_types = cols(RT1 = col_number(), 
+  #                                           RT2 = col_number(), RT3 = col_number(), 
+   #                                          RT4 = col_number(), RT5 = col_number(), 
+    #                                         RT6 = col_number(), Comp_Question_RT = col_number(), 
+     #                                        item_number = col_number()))
 
 #model.nullR4 <- lmer(RT4 ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
 modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
@@ -176,6 +182,7 @@ modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) +
 summary(modelRT4)
 
 #For some reason the model wont run "Error in diag(Lambdat) : object 'R_sparse_diag_get' not found" Have posted on stacoverflow to get some advice.
+
 
 #anova(modelR4, model.nullR4)
 
