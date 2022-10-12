@@ -115,14 +115,35 @@ alldata_Pred_RT$condition_number <- recode(alldata_Pred_RT$condition_number, "1"
 #sum(is.na(alldata_Pred_RT$RT5))
 #sum(is.na(alldata_Pred_RT$RT6))
 
+#Create ms. over second so as to be comparable with previous studies
+alldata_Pred_RT <- alldata_Pred_RT%>%
+  mutate(RT1ms = RT1*1000)
+alldata_Pred_RT <- alldata_Pred_RT%>%
+  mutate(RT2ms = RT2*1000)
+alldata_Pred_RT <- alldata_Pred_RT%>%
+  mutate(RT3ms = RT3*1000)
+alldata_Pred_RT <- alldata_Pred_RT%>%
+  mutate(RT4ms = RT4*1000)
+alldata_Pred_RT <- alldata_Pred_RT%>%
+  mutate(RT5ms = RT5*1000)
+alldata_Pred_RT <- alldata_Pred_RT%>%
+  mutate(RT6ms = RT6*1000)
+
 
 ################Lognormal analysis as Weibull is closest to lognormal and gamma#############################
 
 # Let's have a look at region 3 Which is our Prediction region
+# Let's have a look at region 3 Which is our Prediction region
+
+#view(alldata_Pred_RT)
+
+alldata_Pred_RT %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
 
 #Violin plots
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -131,7 +152,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
@@ -140,7 +161,7 @@ alldata_Pred_RT %>%
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -149,41 +170,35 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
   guides(scale = FALSE)
 
-#Descriptives
-alldata_Pred_RT %>% 
-  group_by(condition_number) %>%
-  summarise(mean(RT3), sd(RT3))
-
-
 
 # Model assuming normality of residuals maximal structure
 #Maximal model with no singularity of fit error drops participant and item random effects
-modelRT3 <- lmer(RT3 ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+modelRT3ms <- lmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
                  REML = TRUE) 
-summary(modelRT3)
+summary(modelRT3ms)
 
-model.nullRT3 <- lmer(RT3 ~ (1 | participant) + (1 | item_number), alldata_Pred_RT) 
+model.nullRT3ms <- lmer(RT3ms ~ (1 | participant) + (1 | item_number), alldata_Pred_RT) 
 
-anova(modelRT3,model.nullRT3)
+anova(modelRT3ms,model.nullRT3ms)
 
 #add in group_stATUS and shows TD driving the effect
 #Maximal model with no singularity of fit error drops participant and item random effects
-modelRT3GS <- lmer(RT3 ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+modelRT3msGS <- lmer(RT3ms ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
                    REML = TRUE) 
-summary(modelRT3GS)
+summary(modelRT3msGS)
 
 #All the data for this model looks pretty normal.
-check_model(modelRT3)
-qqnorm(residuals(modelRT3))
-qqline(residuals(modelRT3))
-descdist(alldata_Pred_RT$RT3)
+check_model(modelRT3ms)
+qqnorm(residuals(modelRT3ms))
+qqline(residuals(modelRT3ms))
+descdist(alldata_Pred_RT$RT3ms)
 
 
 
@@ -192,7 +207,7 @@ descdist(alldata_Pred_RT$RT3)
 
 #Violin plots
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT4, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT4ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -201,7 +216,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT4, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT4ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
@@ -210,7 +225,7 @@ alldata_Pred_RT %>%
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT4, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -219,7 +234,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT4, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
@@ -229,7 +244,7 @@ alldata_Pred_RT %>%
 #Descriptives
 alldata_Pred_RT %>% 
   group_by(condition_number) %>%
-  summarise(mean(RT4), sd(RT4))
+  summarise(mean(RT4ms), sd(RT4ms))
 
 
 
@@ -248,21 +263,21 @@ alldata_Pred_RT %>%
      #                                        item_number = col_number()))
 
 
-#model.nullR4 <- lmer(RT4 ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
+#model.nullR4 <- lmer(RT4ms ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
 #Maximal model with no singularity of fit error drops item random effects
-modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 | item_number), data = alldata_Pred_RT,
+modelRT4ms <- lmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 | item_number), data = alldata_Pred_RT,
                  REML = TRUE) 
-summary(modelRT4)
+summary(modelRT4ms)
 
-model.nullRT4 <- lmer(RT4 ~ (1 + condition_number | participant) + (1 | item_number), alldata_Pred_RT) 
+model.nullRT4ms <- lmer(RT4ms ~ (1 + condition_number | participant) + (1 | item_number), alldata_Pred_RT) 
 
-anova(modelRT4,model.nullRT4)
+anova(modelRT4ms,model.nullRT4ms)
 
 #add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing.
 #Maximal model with no singularity of fit error drops item random effects
-modelRT4GS <- lmer(RT4 ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), data = alldata_Pred_RT,
+modelRT4msGS <- lmer(RT4ms ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), data = alldata_Pred_RT,
                  REML = TRUE) 
-summary(modelRT4GS)
+summary(modelRT4msGS)
 
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
@@ -271,10 +286,10 @@ summary(modelRT4GS)
 #anova(modelR4, model.nullR4)
 
 #All the data for this model looks pretty normal.
-check_model(modelRT4)
-#qqnorm(residuals(modelRT4))
-#qqline(residuals(modelRT4))
-descdist(alldata_Pred_RT$RT4)
+check_model(modelRT4ms)
+#qqnorm(residuals(modelRT4ms))
+#qqline(residuals(modelRT4ms))
+descdist(alldata_Pred_RT$RT4ms)
 
 
 
@@ -284,7 +299,7 @@ descdist(alldata_Pred_RT$RT4)
 
 #Violin plots
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -293,7 +308,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
@@ -302,7 +317,7 @@ alldata_Pred_RT %>%
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -311,7 +326,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
@@ -321,25 +336,25 @@ alldata_Pred_RT %>%
 #Descriptives
 alldata_Pred_RT %>% 
   group_by(condition_number) %>%
-  summarise(mean(RT5), sd(RT5))
+  summarise(mean(RT5ms), sd(RT5ms))
 
 
 
 # Model assuming normality of residuals maximal structure
 #Maximal model with no singularity of fit error drops item random effects
-modelRT5 <- lmer(RT5 ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+modelRT5ms <- lmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
                  REML = TRUE) 
-summary(modelRT5)
+summary(modelRT5ms)
 
-model.nullRT5 <- lmer(RT5 ~ (1 | participant) + (1 | item_number), alldata_Pred_RT) 
+model.nullRT5ms <- lmer(RT5ms ~ (1 | participant) + (1 | item_number), alldata_Pred_RT) 
 
-anova(modelRT5,model.nullRT5)
+anova(modelRT5ms,model.nullRT5ms)
 
 #add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing mechanisms for ASC and TD.
 #Maximal model with no singularity of fit error drops item random effects
-modelRT5GS <- lmer(RT5 ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+modelRT5msGS <- lmer(RT5ms ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
                    REML = TRUE) 
-summary(modelRT5GS)
+summary(modelRT5msGS)
 
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
@@ -348,22 +363,22 @@ summary(modelRT5GS)
 #anova(modelR4, model.nullR4)
 
 #All the data for this model looks pretty normal.
-check_model(modelRT5)
-qqnorm(residuals(modelRT5))
-qqline(residuals(modelRT5))
-descdist(alldata_Pred_RT$RT5)
+check_model(modelRT5ms)
+qqnorm(residuals(modelRT5ms))
+qqline(residuals(modelRT5ms))
+descdist(alldata_Pred_RT$RT5ms)
 
 
 ## Let's have a look at total reading time across all regions
 
 alldata_Pred_RT <- alldata_Pred_RT %>% group_by(participant) %>%
-  mutate(TT = (RT1 + RT2 + RT3 + RT4 + RT5 + RT6))
+  mutate(TT = (RT1ms + RT2ms + RT3ms + RT4ms + RT5ms + RT6ms))
 
 #view(alldata_Pred_RT)
 #IT WORKED!!!!!
 #Violin plots
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -439,17 +454,17 @@ descdist(alldata_Pred_RT$TT)
 
 #Nothing significant with Gamma (if i did it right not sure if after family = gamma i shouldn't have (link = "log") or (link = "inverse")) 
 
-GammaRT3 <- glmer(RT3 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+GammaRT3ms <- glmer(RT3ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
                   family = Gamma (link = "inverse"), data = alldata_Pred_RT)
-summary(GammaRT3)
+summary(GammaRT3ms)
 
-GammaRT4 <- glmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
                   family = Gamma (link = "inverse"), data = alldata_Pred_RT)
-summary(GammaRT4)
+summary(GammaRT4ms)
 
-GammaRT5 <- glmer(RT5 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
                   family = Gamma (link = "inverse"), data = alldata_Pred_RT)
-summary(GammaRT5)
+summary(GammaRT5ms)
 
 GammaRTT <- glmer(TT ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
                   family = Gamma (link = "inverse"), data = alldata_Pred_RT)
