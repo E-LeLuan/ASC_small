@@ -116,7 +116,79 @@ alldata_Pred_RT$condition_number <- recode(alldata_Pred_RT$condition_number, "1"
 #sum(is.na(alldata_Pred_RT$RT6))
 
 
-# Let's have a look at region 4
+################Lognormal analysis as Weibull is closest to lognormal and gamma#############################
+
+# Let's have a look at region 3 Which is our Prediction region
+
+#Violin plots
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT3, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT3, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Violin plots by group_status
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT3, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = FALSE)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT3, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = FALSE)
+
+#Descriptives
+alldata_Pred_RT %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT3), sd(RT3))
+
+
+
+# Model assuming normality of residuals maximal structure
+#Maximal model with no singularity of fit error drops participant and item random effects
+modelRT3 <- lmer(RT3 ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+                 REML = TRUE) 
+summary(modelRT3)
+
+model.nullRT3 <- lmer(RT3 ~ (1 | participant) + (1 | item_number), alldata_Pred_RT) 
+
+anova(modelRT3,model.nullRT3)
+
+#add in group_stATUS and shows TD driving the effect
+#Maximal model with no singularity of fit error drops participant and item random effects
+modelRT3GS <- lmer(RT3 ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+                   REML = TRUE) 
+summary(modelRT3GS)
+
+#All the data for this model looks pretty normal.
+check_model(modelRT3)
+qqnorm(residuals(modelRT3))
+qqline(residuals(modelRT3))
+descdist(alldata_Pred_RT$RT3)
+
+
+
+
+# Let's have a look at region 4 Which is our critical/ Question region
 
 #Violin plots
 alldata_Pred_RT %>% 
@@ -175,16 +247,24 @@ alldata_Pred_RT %>%
     #                                         RT6 = col_number(), Comp_Question_RT = col_number(), 
      #                                        item_number = col_number()))
 
+
 #model.nullR4 <- lmer(RT4 ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
-modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
+#Maximal model with no singularity of fit error drops item random effects
+modelRT4 <- lmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 | item_number), data = alldata_Pred_RT,
                  REML = TRUE) 
 summary(modelRT4)
 
-#add in group_stATUS
-modelRT4 <- lmer(RT4 ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
+model.nullRT4 <- lmer(RT4 ~ (1 + condition_number | participant) + (1 | item_number), alldata_Pred_RT) 
+
+anova(modelRT4,model.nullRT4)
+
+#add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing.
+#Maximal model with no singularity of fit error drops item random effects
+modelRT4GS <- lmer(RT4 ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), data = alldata_Pred_RT,
                  REML = TRUE) 
-summary(modelRT4)
-# TD driving the effect
+summary(modelRT4GS)
+
+# THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
 # It Worked!!!!!
 
@@ -195,6 +275,172 @@ check_model(modelRT4)
 #qqnorm(residuals(modelRT4))
 #qqline(residuals(modelRT4))
 descdist(alldata_Pred_RT$RT4)
+
+
+
+
+
+# Let's have a look at region 5 Which is our post-critical/ REply region
+
+#Violin plots
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT5, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT5, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Violin plots by group_status
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT5, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT5, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Descriptives
+alldata_Pred_RT %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5), sd(RT5))
+
+
+
+# Model assuming normality of residuals maximal structure
+#Maximal model with no singularity of fit error drops item random effects
+modelRT5 <- lmer(RT5 ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+                 REML = TRUE) 
+summary(modelRT5)
+
+model.nullRT5 <- lmer(RT5 ~ (1 | participant) + (1 | item_number), alldata_Pred_RT) 
+
+anova(modelRT5,model.nullRT5)
+
+#add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing mechanisms for ASC and TD.
+#Maximal model with no singularity of fit error drops item random effects
+modelRT5GS <- lmer(RT5 ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+                   REML = TRUE) 
+summary(modelRT5GS)
+
+# THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
+
+# It Worked!!!!!
+
+#anova(modelR4, model.nullR4)
+
+#All the data for this model looks pretty normal.
+check_model(modelRT5)
+qqnorm(residuals(modelRT5))
+qqline(residuals(modelRT5))
+descdist(alldata_Pred_RT$RT5)
+
+
+## Let's have a look at total reading time across all regions
+
+alldata_Pred_RT <- alldata_Pred_RT %>% group_by(participant) %>%
+  mutate(TT = (RT1 + RT2 + RT3 + RT4 + RT5 + RT6))
+
+#view(alldata_Pred_RT)
+#IT WORKED!!!!!
+#Violin plots
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = RT5, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = TT, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Violin plots by group_status
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Boxplt
+alldata_Pred_RT %>% 
+  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  labs(y = "Reading time in seconds", x = "Prediction") +
+  geom_boxplot()+  
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
+
+#Descriptives
+alldata_Pred_RT %>% 
+  group_by(condition_number) %>%
+  summarise(mean(TT), sd(TT))
+
+
+
+# Model assuming normality of residuals maximal structure
+#Maximal model with no singularity of fit error drops item random effects
+modelTT <- lmer(TT ~ condition_number + (1 | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
+                 REML = TRUE) 
+summary(modelTT)
+
+model.nullTT <- lmer(TT ~ (1 | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
+
+anova(modelTT,model.nullTT)
+
+#add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing mechanisms for ASC and TD.
+#Maximal model with no singularity of fit error drops item random effects
+modelTTGS <- lmer(TT ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+                   REML = TRUE) 
+summary(modelTTGS)
+
+# THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
+
+# It Worked!!!!!
+
+#anova(modelR4, model.nullR4)
+
+#All the data for this model looks pretty normal.
+check_model(modelTT)
+qqnorm(residuals(modelTT))
+qqline(residuals(modelTT))
+descdist(alldata_Pred_RT$TT)
+
+
+
+################Lognormal analysis as Weibull is closest to lognormal and gamma#############################
+
+
+
+
+
+
 
 
 #Export a CSV of the new data set...
