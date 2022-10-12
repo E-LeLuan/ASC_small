@@ -99,7 +99,7 @@ P60_ASC_SMALL_SRS2 <- read_csv("SRS2_data/P60_ASC_SMALL_SRS2.csv")
 
 # Combining the individual data spreadsheets into one data frame.
 
-alldata <- rbind (P1_ASC_SMALL_SRS2, P2_ASC_SMALL_SRS2, P3_ASC_SMALL_SRS2,P4_ASC_SMALL_SRS2, P5_ASC_SMALL_SRS2,
+alldata_SRS2 <- rbind (P1_ASC_SMALL_SRS2, P2_ASC_SMALL_SRS2, P3_ASC_SMALL_SRS2,P4_ASC_SMALL_SRS2, P5_ASC_SMALL_SRS2,
                   P6_ASC_SMALL_SRS2, P7_ASC_SMALL_SRS2, P8_ASC_SMALL_SRS2, P9_ASC_SMALL_SRS2, P10_ASC_SMALL_SRS2,
                   P11_ASC_SMALL_SRS2, P12_ASC_SMALL_SRS2, P13_ASC_SMALL_SRS2, P14_ASC_SMALL_SRS2, P15_ASC_SMALL_SRS2,
                   P16_ASC_SMALL_SRS2,P17_ASC_SMALL_SRS2, P18_ASC_SMALL_SRS2, P19_ASC_SMALL_SRS2,P20_ASC_SMALL_SRS2,
@@ -113,17 +113,17 @@ alldata <- rbind (P1_ASC_SMALL_SRS2, P2_ASC_SMALL_SRS2, P3_ASC_SMALL_SRS2,P4_ASC
                 
 
 # check it yup all good
-#view(alldata)
+#view(alldata_SRS2)
 
-alldata <- alldata%>%
+alldata_SRS2 <- alldata_SRS2%>%
 mutate(Group_Status = participant <= 30)
 
 # Rename TRUE FALSE to more meaningful labels.
-alldata$Group_Status[alldata$Group_Status == 'TRUE'] <- "ASC"
-alldata$Group_Status[alldata$Group_Status == 'FALSE'] <- "TD"
+alldata_SRS2$Group_Status[alldata_SRS2$Group_Status == 'TRUE'] <- "ASC"
+alldata_SRS2$Group_Status[alldata_SRS2$Group_Status == 'FALSE'] <- "TD"
 
 # check it yup all good
-#view(alldata)
+#view(alldata_SRS2)
 
 # SRS2 scoring ignore none as these are filler items we are not interested in. 
 
@@ -133,7 +133,7 @@ alldata$Group_Status[alldata$Group_Status == 'FALSE'] <- "TD"
 # What the code should do is take items that are negatively scored and turn a 4 into a 2, 
 # turn a 3 into a 1, and turn 1 and 2 into a 0. 
 
-alldata <- alldata %>% mutate(SRS2_tidy = case_when 
+alldata_SRS2 <- alldata_SRS2 %>% mutate(SRS2_tidy = case_when 
                               (SRS2_scoring_type == 'positive' &  SRS2_resp == 1 ~ 0, 
                                 SRS2_scoring_type == 'positive' &  SRS2_resp == 2 ~ 1,
                                 SRS2_scoring_type == 'positive' &  SRS2_resp == 3 ~ 2,
@@ -142,7 +142,7 @@ alldata <- alldata %>% mutate(SRS2_tidy = case_when
                                 SRS2_scoring_type == 'negative' &  SRS2_resp == 2 ~ 2,
                                 SRS2_scoring_type == 'negative' &  SRS2_resp == 3 ~ 1,
                                 SRS2_scoring_type == 'negative' &  SRS2_resp == 4 ~ 0,))
-#view(alldata)
+#view(alldata_SRS2)
 
 # It worked!!!!!
 
@@ -150,26 +150,26 @@ alldata <- alldata %>% mutate(SRS2_tidy = case_when
 #subScale and total score and DSM-5 compatible subscales
 
 # Total score first
-alldata <- alldata %>% group_by(participant) %>%
+alldata_SRS2 <- alldata_SRS2 %>% group_by(participant) %>%
   mutate(total_RAW_score = sum(SRS2_tidy))
 
 # Now individual treatment subscale raw scores
                                 
-alldata <- alldata %>% group_by(participant, SRS2_treatment_subscale) %>% 
+alldata_SRS2 <- alldata_SRS2 %>% group_by(participant, SRS2_treatment_subscale) %>% 
   mutate(treatment_RAW_score = sum(SRS2_tidy))
 
 #Now DSM-5 compatible subscale scores
 #Sort into your subscales of RRB and SCI DSM5 subscales
-alldata <- alldata%>%
+alldata_SRS2 <- alldata_SRS2%>%
   mutate(DSM5_group = SRS2_treatment_subscale == 'rrb')
 # Rename TRUE FALSE to more meaningful labels.
-alldata$DSM5_group [alldata$DSM5_group == 'TRUE'] <- "RRB"
-alldata$DSM5_group [alldata$DSM5_group == 'FALSE'] <- "SCI"
+alldata_SRS2$DSM5_group [alldata_SRS2$DSM5_group == 'TRUE'] <- "RRB"
+alldata_SRS2$DSM5_group [alldata_SRS2$DSM5_group == 'FALSE'] <- "SCI"
 #Now get the RAW DSM5 scores
-alldata <- alldata %>% group_by(participant, DSM5_group) %>% 
+alldata_SRS2 <- alldata_SRS2 %>% group_by(participant, DSM5_group) %>% 
   mutate(DSM5_RAW_score = sum(SRS2_tidy))
 
-#view(alldata)
+#view(alldata_SRS2)
 
 # It worked!!!!!
 
@@ -177,16 +177,16 @@ alldata <- alldata %>% group_by(participant, DSM5_group) %>%
 # participants to a specified value based on a range as seen below.
 
 # Let'd find the minimum vale so we don't do any extra work
-min(alldata$total_RAW_score)
-max(alldata$total_RAW_score)
+min(alldata_SRS2$total_RAW_score)
+max(alldata_SRS2$total_RAW_score)
 #output min is 18 and the max is 149 so we don't need to input values below for anything less
 
 #Why has it only done this for one participants data???????? grrrrrr
-#alldata['total_t_score'][alldata['total_t_score']> 17 & alldata['total_t_score'] <19] <- 42
+#alldata_SRS2['total_t_score'][alldata_SRS2['total_t_score']> 17 & alldata_SRS2['total_t_score'] <19] <- 42
 # Also Doesn't work!!! 
-#alldata <- alldata %>% mutate(total_t_score = case_when(total_RAW_score > 17 & alldata$total_raw_score < 19 ~ '42'))
+#alldata_SRS2 <- alldata_SRS2 %>% mutate(total_t_score = case_when(total_RAW_score > 17 & alldata_SRS2$total_raw_score < 19 ~ '42'))
 
-alldata <- alldata %>%
+alldata_SRS2 <- alldata_SRS2 %>%
   mutate(total_t_score = case_when(total_RAW_score >= 17 & total_RAW_score <= 19 ~ '42',
                                    total_RAW_score >= 20 & total_RAW_score <= 21 ~ '43',
                                    total_RAW_score >= 22 & total_RAW_score <= 24 ~ '44',
@@ -241,19 +241,19 @@ alldata <- alldata %>%
 # It Worked!!!!!!#
 
 #Now lets see according to the t score where do these participants traits sit on the autism spectrum condition
-alldata <- alldata %>%
+alldata_SRS2 <- alldata_SRS2 %>%
   mutate(overall_clinical_range = case_when(total_t_score>= 0 & total_t_score <= 59 ~ 'Within Normal Limits',
                                    total_t_score >= 60 & total_t_score <= 65 ~ 'Mild',
                                    total_t_score >= 66 & total_t_score <= 75 ~ 'Moderate',
                                    total_t_score >= 76 & total_t_score <= 90 ~ 'Severe'))
 
-#view(alldata)
+#view(alldata_SRS2)
 #It Worked!!!
 
 #Now Individual t scores for treatment subscales
 # minimum value = 0 RRB & 15 SCI, maximum value = 34 RRB & 117 SCI
-aggregate(treatment_RAW_score ~ SRS2_treatment_subscale, alldata, function(x) min(x))
-aggregate(treatment_RAW_score ~ SRS2_treatment_subscale, alldata, function(x) max(x))
+aggregate(treatment_RAW_score ~ SRS2_treatment_subscale, alldata_SRS2, function(x) min(x))
+aggregate(treatment_RAW_score ~ SRS2_treatment_subscale, alldata_SRS2, function(x) max(x))
 
 #SRS2_treatment_subscale treatment_RAW_score
 #1                     awr                   1
@@ -267,7 +267,7 @@ aggregate(treatment_RAW_score ~ SRS2_treatment_subscale, alldata, function(x) ma
 #4                     mot                  28
 #5                     rrb                  34
 
-alldata <- alldata %>%
+alldata_SRS2 <- alldata_SRS2 %>%
   mutate(treatment_t_score = case_when(SRS2_treatment_subscale == "awr" & treatment_RAW_score == 0 ~ '32',
                                        SRS2_treatment_subscale == "awr" & treatment_RAW_score == 1 ~ '35', 
                                        SRS2_treatment_subscale == "awr" & treatment_RAW_score == 2 ~ '38', 
@@ -320,7 +320,7 @@ alldata <- alldata %>%
                                        SRS2_treatment_subscale == "cog" & treatment_RAW_score == 27 ~ '84',
                                        SRS2_treatment_subscale == "cog" & treatment_RAW_score == 28 ~ '86',
                                        SRS2_treatment_subscale == "cog" & treatment_RAW_score == 29 ~ '88',
-                                       SRS2_treatment_subscale == "cog" & treatment_RAW_score == 30 ~ '90',
+                                       SRS2_treatment_subscale == "cog" & treatment_RAW_score >= 30 ~ '90',
                                        SRS2_treatment_subscale == "com" & treatment_RAW_score == 0 ~ '37',
                                        SRS2_treatment_subscale == "com" & treatment_RAW_score == 1 ~ '38',
                                        SRS2_treatment_subscale == "com" & treatment_RAW_score == 2 ~ '39',
@@ -375,7 +375,7 @@ alldata <- alldata %>%
                                        SRS2_treatment_subscale == "com" & treatment_RAW_score == 51 ~ '87',
                                        SRS2_treatment_subscale == "com" & treatment_RAW_score == 52 ~ '88',
                                        SRS2_treatment_subscale == "com" & treatment_RAW_score == 53 ~ '89',
-                                       SRS2_treatment_subscale == "com" & treatment_RAW_score == 54 ~ '90',
+                                       SRS2_treatment_subscale == "com" & treatment_RAW_score >= 54 ~ '90',
                                        SRS2_treatment_subscale == "mot" & treatment_RAW_score == 0 ~ '37',
                                        SRS2_treatment_subscale == "mot" & treatment_RAW_score == 1 ~ '39',
                                        SRS2_treatment_subscale == "mot" & treatment_RAW_score == 2 ~ '41',
@@ -408,7 +408,7 @@ alldata <- alldata %>%
                                        SRS2_treatment_subscale == "mot" & treatment_RAW_score == 29 ~ '86',
                                        SRS2_treatment_subscale == "mot" & treatment_RAW_score == 30 ~ '87',
                                        SRS2_treatment_subscale == "mot" & treatment_RAW_score == 31 ~ '89',
-                                       SRS2_treatment_subscale == "mot" & treatment_RAW_score == 32 ~ '90',
+                                       SRS2_treatment_subscale == "mot" & treatment_RAW_score >= 32 ~ '90',
                                        SRS2_treatment_subscale == "rrb" & treatment_RAW_score == 0 ~ '40',
                                        SRS2_treatment_subscale == "rrb" & treatment_RAW_score == 1 ~ '42',
                                        SRS2_treatment_subscale == "rrb" & treatment_RAW_score == 2 ~ '43',
@@ -441,24 +441,24 @@ alldata <- alldata %>%
                                        SRS2_treatment_subscale == "rrb" & treatment_RAW_score == 29 ~ '88',
                                        SRS2_treatment_subscale == "rrb" & treatment_RAW_score >= 30 ~ '90'))
 
-alldata <- alldata %>%
+alldata_SRS2 <- alldata_SRS2 %>%
   mutate(treatment_clinical_range = case_when(treatment_t_score >= 0 & treatment_t_score <= 59 ~ 'Within Normal Limits',
                                               treatment_t_score >= 60 & treatment_t_score <= 65 ~ 'Mild',
                                               treatment_t_score >= 66 & treatment_t_score <= 75 ~ 'Moderate',
                                               treatment_t_score >= 76 & treatment_t_score <= 90 ~ 'Severe'))
 
-#view(alldata)                                        
+#view(alldata_SRS2)                                        
 # Treatment clinical ranges
 
 
 
 #Now Individual t scores for DSM-5 compatible subscales
 # minimum value = 0 RRB & 15 SCI, maximum value = 34 RRB & 117 SCI
-aggregate(DSM5_RAW_score ~ DSM5_group, alldata, function(x) min(x))
-aggregate(DSM5_RAW_score ~ DSM5_group, alldata, function(x) max(x))
+aggregate(DSM5_RAW_score ~ DSM5_group, alldata_SRS2, function(x) min(x))
+aggregate(DSM5_RAW_score ~ DSM5_group, alldata_SRS2, function(x) max(x))
 
 
-alldata <- alldata %>%
+alldata_SRS2 <- alldata_SRS2 %>%
   mutate(DSM5_t_score = case_when(DSM5_group == "SCI" & DSM5_RAW_score == 0 ~ '35',
                                   DSM5_group == "SCI" & DSM5_RAW_score >= 1 & DSM5_RAW_score <= 2 ~ '36',
                                   DSM5_group == "SCI" & DSM5_RAW_score >= 3 & DSM5_RAW_score <= 5 ~ '37',
@@ -547,17 +547,17 @@ alldata <- alldata %>%
                                   DSM5_group == "RRB" & DSM5_RAW_score == 29 ~ '88',
                                   DSM5_group == "RRB" & DSM5_RAW_score >= 30 ~ '90'))
 
-alldata <- alldata %>%
+alldata_SRS2 <- alldata_SRS2 %>%
   mutate(DSM5_clinical_range = case_when(DSM5_t_score >= 0 & DSM5_t_score <= 59 ~ 'Within Normal Limits',
                                          DSM5_t_score >= 60 & DSM5_t_score <= 65 ~ 'Mild',
                                          DSM5_t_score >= 66 & DSM5_t_score <= 75 ~ 'Moderate',
                                          DSM5_t_score >= 76 & DSM5_t_score <= 90 ~ 'Severe'))
                     
 
-view(alldata)                                
+view(alldata_SRS2)                                
 
 #Export a CSV of the new data set...
-write.csv(alldata,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\alldata.csv", row.names = TRUE)
+write.csv(alldata_SRS2,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\alldata_SRS2.csv", row.names = TRUE)
 
 # All data extracted and new CSV created called all data created. WHOOP WHOOP!!!!!!!!!
 
@@ -568,7 +568,7 @@ write.csv(alldata,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\alldata.c
 #Let's look at the difference between the two groups
 #WHY ARE YOU NOT WORKING because dbl not num. import the exxported dataset and change dbl to num
     
-alldata %>% 
+alldata_SRS2 %>% 
   group_by(Group_Status) %>%
   summarise(mean(total_t_score), sd(total_t_score))
 ##OUTPUT##
