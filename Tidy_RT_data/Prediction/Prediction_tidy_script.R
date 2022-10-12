@@ -435,13 +435,26 @@ descdist(alldata_Pred_RT$TT)
 
 
 ################Lognormal analysis as Weibull is closest to lognormal and gamma#############################
+#With Gamma we can include more random effects including maximal structure with random slopes for particiapnt and item 
 
+#Nothing significant with Gamma (if i did it right not sure if after family = gamma i shouldn't have (link = "log") or (link = "inverse")) 
 
+GammaRT3 <- glmer(RT3 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+                  family = Gamma (link = "inverse"), data = alldata_Pred_RT)
+summary(GammaRT3)
 
+GammaRT4 <- glmer(RT4 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+                  family = Gamma (link = "inverse"), data = alldata_Pred_RT)
+summary(GammaRT4)
 
+GammaRT5 <- glmer(RT5 ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+                  family = Gamma (link = "inverse"), data = alldata_Pred_RT)
+summary(GammaRT5)
 
+GammaRTT <- glmer(TT ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+                  family = Gamma (link = "inverse"), data = alldata_Pred_RT)
 
-
+summary(GammaRTT)
 
 #Export a CSV of the new data set...
 write.csv(alldata_Pred_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
