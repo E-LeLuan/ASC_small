@@ -218,6 +218,7 @@ all_data_join$EQ_score <- scale(all_data_join$EQ_score)
 model_alldatacov_RT3ms <- lmer(RT3ms ~ total_t_score + EQ_score + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
 
+#model failed to converge will have to simplofy more
 
 
 
@@ -233,13 +234,13 @@ alldata_Pred_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT4ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = FALSE)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT4ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = FALSE)
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
@@ -251,13 +252,13 @@ alldata_Pred_RT %>%
   guides(scale = FALSE)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = FALSE)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = FALSE)
 
 #Descriptives
 alldata_Pred_RT %>% 
@@ -291,6 +292,7 @@ model.nullRT4ms <- lmer(RT4ms ~ (1 + condition_number | participant) + (1 | item
 
 anova(modelRT4ms,model.nullRT4ms)
 
+
 #add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing.
 #Maximal model with no singularity of fit error drops item random effects
 modelRT4msGS <- lmer(RT4ms ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), data = alldata_Pred_RT,
@@ -298,17 +300,17 @@ modelRT4msGS <- lmer(RT4ms ~ condition_number + Group_Status + (1 + condition_nu
 summary(modelRT4msGS)
 
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
-
 # It Worked!!!!!
-
-#anova(modelR4, model.nullR4)
-
 #All the data for this model looks pretty normal.
 check_model(modelRT4ms)
 #qqnorm(residuals(modelRT4ms))
 #qqline(residuals(modelRT4ms))
 descdist(alldata_Pred_RT$RT4ms)
 
+#Lets add ID's
+# Model including covariates
+model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + total_t_score + EQ_score + (1 +condition_number | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT4ms)
 
 
 
