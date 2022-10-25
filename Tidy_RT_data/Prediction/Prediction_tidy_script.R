@@ -309,17 +309,17 @@ descdist(alldata_Pred_RT$RT4ms)
 
 #Lets add ID's
 # Model including covariates
-model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + total_t_score + EQ_score + (1 +condition_number | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + total_t_score + EQ_score + (1 + condition_number | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
 
 
 
-# Let's have a look at region 5 Which is our post-critical/ REply region
+# Let's have a look at region 5 Which is our post-critical/ Reply region
 
 #Violin plots
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 5") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -337,7 +337,7 @@ alldata_Pred_RT %>%
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 5") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -346,7 +346,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 5") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
