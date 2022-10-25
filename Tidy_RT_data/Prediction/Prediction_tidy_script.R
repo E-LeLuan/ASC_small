@@ -208,15 +208,17 @@ alldata_EQ <- read_csv("EQ_data/alldata_EQ.csv")
 all_data_join <- inner_join(alldata_Pred_RT, alldata_SRS2, by = "participant")
 all_data_join <- inner_join(all_data_join, alldata_EQ, by = "participant")
 
-View(all_data_join)
+#View(all_data_join)
 
 # Scale the ID measures...
 all_data_join$total_t_score <- scale(all_data_join$total_t_score)
 all_data_join$EQ_score <- scale(all_data_join$EQ_score)
 
 # Model including covariates
-model_alldatacov_RT3ms <- lmer(RT3ms ~ total_t_score + EQ_score + condition_number + (1 + condition_number| participant) +  (1 + condition_number | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT3ms <- lmer(RT3ms ~ total_t_score + EQ_score + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
+
+
 
 
 # Let's have a look at region 4 Which is our critical/ Question region
