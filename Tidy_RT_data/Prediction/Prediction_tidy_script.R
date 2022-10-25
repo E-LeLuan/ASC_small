@@ -143,7 +143,7 @@ alldata_Pred_RT %>%
 
 #Violin plots
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -152,7 +152,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_boxplot()+  
   geom_jitter(alpha = .2, width = .1) +
@@ -161,7 +161,7 @@ alldata_Pred_RT %>%
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 3") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -200,7 +200,23 @@ qqnorm(residuals(modelRT3ms))
 qqline(residuals(modelRT3ms))
 descdist(alldata_Pred_RT$RT3ms)
 
+#Now Let's add in individual differences
+#Import Individual difference measures
+alldata_SRS2 <- read_csv("SRS2_data/alldata_SRS2.csv")
+alldata_EQ <- read_csv("EQ_data/alldata_EQ.csv")
 
+all_data_join <- inner_join(alldata_Pred_RT, alldata_SRS2, by = "participant")
+all_data_join <- inner_join(all_data_join, alldata_EQ, by = "participant")
+
+View(all_data_join)
+
+# Scale the ID measures...
+all_data_join$total_t_score <- scale(all_data_join$total_t_score)
+all_data_join$EQ_score <- scale(all_data_join$EQ_score)
+
+# Model including covariates
+model_alldatacov_RT3ms <- lmer(RT3ms ~ total_t_score + EQ_score + condition_number + (1 + condition_number| participant) +  (1 + condition_number | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT3ms)
 
 
 # Let's have a look at region 4 Which is our critical/ Question region
@@ -212,7 +228,7 @@ alldata_Pred_RT %>%
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(colour = FALSE)
+  guides(scale = none)
 
 #Boxplt
 alldata_Pred_RT %>% 
