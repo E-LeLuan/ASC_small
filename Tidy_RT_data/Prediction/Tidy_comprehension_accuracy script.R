@@ -50,7 +50,16 @@ view(alldata_Pred_RT_comp)
 #Whoop whoop it worked 
 
 #write to CSV file location on laptop is .... C:\Users\eliza\Desktop\ASC_small\Tidy_RT_data
-write.csv(alldata_Pred_RT_comp,"//C:/Users/eliza/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
+write.csv(alldata_Pred_RT_comp,"//C:/Users/eliza/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT_comp.csv", row.names = TRUE)
 #C:\Users\eliza\Desktop\ASC_small\Tidy_RT_data
 
-write.csv(alldata_SRS2,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\alldata_SRS2.csv", row.names = TRUE)
+write.csv(alldata_EQ,"//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data\\alldata_EQ.csv", row.names = TRUE)
+
+write.csv(alldata_Pred_RT_comp,"//D:/RCSVs\\alldata_Pred_RT_comp.csv", row.names = TRUE)
+
+
+
+
+
+
+
