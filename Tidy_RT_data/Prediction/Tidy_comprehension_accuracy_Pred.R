@@ -29,6 +29,16 @@ alldata_Pred_RT_comp <- alldata_Pred_RT %>%
                                Comp_Question_Resp == "n" & item_number == 10 ~ '1'))
 view(alldata_Pred_RT_comp)
 
+
+#We have a problem where participant 56 has responded n to question 22 instead of space so 
+#we need to convert this na to a 0.
+#code below shows us that we have 1 NA
+sum(is.na(alldata_Pred_RT_comp$comp_tidy))
+#Let's replace it with 0
+alldata_Pred_RT_comp <- alldata_Pred_RT_comp %>% filter(comp_tidy != 0)
+# check again and now we have no NAs
+sum(is.na(alldata_Pred_RT_comp$comp_tidy))
+
 # Change column comp_tidy to numeric
 #find out what it is listed as...
 sapply(alldata_Pred_RT_comp, class)
@@ -56,7 +66,24 @@ alldata_Pred_RT_comp <- alldata_Pred_RT_comp %>% group_by (participant) %>%
 write.csv (alldata_Pred_RT_comp,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT_comp.csv", row.names = TRUE)
 
 
+# now lets just get one number of accuracy to upload to spreadsheet
+
+library(readr)
+library(tidyverse)
+alldata_Pred_RT_comp <- read_csv("Tidy_RT_data/Prediction/alldata_Pred_RT_comp.csv", 
+                                 col_types = cols(total_comp = col_number(), 
+                                                  total_perc = col_number()))
+View(alldata_Pred_RT_comp)
 
 
+#Prediction accuracy file size reduced
+Pred_accuracy <- alldata_Pred_RT_comp[ , c("participant", "total_comp" , "total_perc")]
+view(Pred_accuracy)
+
+Pred_accuracyimp <- Pred_accuracy %>% 
+  distinct(participant, total_comp, total_perc, .keep_all = TRUE)
+view(Pred_accuracyimp)
+
+write.csv (SRS2totalscoresimp,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\SRS2totalscoresimp", row.names = TRUE)
 
 
