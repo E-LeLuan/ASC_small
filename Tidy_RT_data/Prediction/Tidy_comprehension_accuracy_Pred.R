@@ -17,8 +17,8 @@ alldata_Pred_RT_comp <- alldata_Pred_RT %>%
                                Comp_Question_Resp == "n" & item_number == 4 ~ '0',
                                Comp_Question_Resp == "y" & item_number == 5 ~ '1',
                                Comp_Question_Resp == "n" & item_number == 5 ~ '0',
-                               Comp_Question_Resp == "y" & item_number == 6 ~ '1',
-                               Comp_Question_Resp == "n" & item_number == 6 ~ '0',
+                               Comp_Question_Resp == "y" & item_number == 6 ~ '0',
+                               Comp_Question_Resp == "n" & item_number == 6 ~ '1',
                                Comp_Question_Resp == "y" & item_number == 7 ~ '0',
                                Comp_Question_Resp == "n" & item_number == 7 ~ '1',
                                Comp_Question_Resp == "y" & item_number == 8 ~ '0',
@@ -26,11 +26,7 @@ alldata_Pred_RT_comp <- alldata_Pred_RT %>%
                                Comp_Question_Resp == "y" & item_number == 9 ~ '0',
                                Comp_Question_Resp == "n" & item_number == 9 ~ '1',
                                Comp_Question_Resp == "y" & item_number == 10 ~ '0',
-                               Comp_Question_Resp == "n" & item_number == 10 ~ '1',
-                               Comp_Question_Resp == "y" & item_number == 11 ~ '0',
-                               Comp_Question_Resp == "n" & item_number == 11 ~ '1',
-                               Comp_Question_Resp == "y" & item_number == 12 ~ '0',
-                               Comp_Question_Resp == "n" & item_number == 12 ~ '1',))
+                               Comp_Question_Resp == "n" & item_number == 10 ~ '1'))
 view(alldata_Pred_RT_comp)
 
 # Change column comp_tidy to numeric
@@ -49,14 +45,15 @@ alldata_Pred_RT_comp <- alldata_Pred_RT_comp %>% group_by (participant) %>%
 view(alldata_Pred_RT_comp)
 #Whoop whoop it worked 
 
+alldata_Pred_RT_comp <- alldata_Pred_RT_comp %>% group_by (participant) %>%
+  mutate(total_perc = (total_comp / 10 * 100))
+
+
+
 #write to CSV file location on laptop is .... C:\Users\eliza\Desktop\ASC_small\Tidy_RT_data
-write.csv(alldata_Pred_RT_comp,"//C:/Users/eliza/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT_comp.csv", row.names = TRUE)
+#write.csv(alldata_Pred_RT_comp,"//C:/Users/eliza/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT_comp.csv", row.names = TRUE)
 #C:\Users\eliza\Desktop\ASC_small\Tidy_RT_data
-
-write.csv(alldata_EQ,"//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data\\alldata_EQ.csv", row.names = TRUE)
-
-write.csv(alldata_Pred_RT_comp,"//D:/RCSVs\\alldata_Pred_RT_comp.csv", row.names = TRUE)
-
+write.csv (alldata_Pred_RT_comp,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT_comp.csv", row.names = TRUE)
 
 
 
