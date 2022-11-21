@@ -73,17 +73,17 @@ library(tidyverse)
 alldata_Pred_RT_comp <- read_csv("Tidy_RT_data/Prediction/alldata_Pred_RT_comp.csv", 
                                  col_types = cols(total_comp = col_number(), 
                                                   total_perc = col_number()))
-View(alldata_Pred_RT_comp)
+#View(alldata_Pred_RT_comp)
 
 
 #Prediction accuracy file size reduced
 Pred_accuracy <- alldata_Pred_RT_comp[ , c("participant", "total_comp" , "total_perc")]
-view(Pred_accuracy)
+#view(Pred_accuracy)
 
 Pred_accuracyimp <- Pred_accuracy %>% 
   distinct(participant, total_comp, total_perc, .keep_all = TRUE)
-view(Pred_accuracyimp)
+#view(Pred_accuracyimp)
 
-write.csv (SRS2totalscoresimp,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\SRS2totalscoresimp", row.names = TRUE)
+write.csv (Pred_accuracyimp,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\Pred_accuracyimp", row.names = TRUE)
 
 
