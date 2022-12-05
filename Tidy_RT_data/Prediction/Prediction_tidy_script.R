@@ -402,10 +402,10 @@ descdist(alldata_Pred_RT$RT5ms)
 all_data_join <- all_data_join %>% group_by(participant) %>%
   mutate(TT = (RT1ms + RT2ms + RT3ms + RT4ms + RT5ms + RT6ms))
 
-#view(alldata_Pred_RT)
+
 #IT WORKED!!!!!
 #Violin plots
-alldata_Pred_RT %>% 
+all_data_join %>% 
   ggplot(aes(x = condition_number, y = TT, colour = condition_number)) + ggtitle("Reaction Total Time") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
@@ -423,7 +423,7 @@ alldata_Pred_RT %>%
 #  guides(scale = none)
 
 #Violin plots by group_status
-alldata_Pred_RT %>% 
+all_data_join %>% 
   ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Total Time") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
@@ -441,7 +441,7 @@ alldata_Pred_RT %>%
 #  guides(scale = none)
 
 #Descriptives
-alldata_Pred_RT %>% 
+all_data_join%>% 
   group_by(condition_number) %>%
   summarise(mean(TT), sd(TT))
 
@@ -487,36 +487,22 @@ descdist(alldata_Pred_RT$TT)
 
 #Nothing significant with Gamma (if i did it right not sure if after family = gamma i shouldn't have (link = "log") or (link = "inverse")) 
 
-GammaRT3ms <- glmer(RT3ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+GammaRT3ms <- glmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), 
                   family = Gamma (link = "inverse"), data = alldata_Pred_RT)
 summary(GammaRT3ms)
 
-GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), 
                   family = Gamma (link = "inverse"), data = alldata_Pred_RT)
 summary(GammaRT4ms)
 
-GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
-                  family = Gamma (link = "inverse"), data = alldata_Pred_RT)
+GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), 
+                  family = Gamma (link = "log"), data = alldata_Pred_RT)
 summary(GammaRT5ms)
 
-GammaRTT <- glmer(TT ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
-                  family = Gamma (link = "inverse"), data = alldata_Pred_RT)
+GammaRTT <- glmer(TT ~ condition_number + (1 | participant) + (1 | item_number), 
+                  family = Gamma (link = "log"), data = all_data_join)
 
 summary(GammaRTT)
 
 #Export a CSV of the new data set...
 write.csv(alldata_Pred_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
-
-#Import ID's
-alldata_Pred_RT <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction/alldata_Pred_RT.csv")
-alldata_EQ <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data/alldata_EQ.csv")
-alldata_SRS2 <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data/alldata_SRS2.csv")
-
-#view(alldata_EQ)
-#view(alldata_SRS2)
-
-all_data_join <- inner_join(alldata_Pred_RT, alldata_EQ, by = "participant")
-all_data_join <- inner_join(all_data_join, alldata_SRS2, by = "participant")
-#view(all_data_join)
-
-
