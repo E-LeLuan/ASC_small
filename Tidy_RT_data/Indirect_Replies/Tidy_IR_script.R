@@ -151,13 +151,13 @@ alldata_IR_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = RT2ms, colour = condition_number)) + ggtitle("Reaction Time Region 2") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT2ms, colour = condition_number)) + ggtitle("Reaction Time Region 2") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Violin plots by group_status
 alldata_IR_RT %>% 
@@ -169,13 +169,13 @@ alldata_IR_RT %>%
   guides(scale = FALSE)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = RT2ms, colour = Group_Status)) + ggtitle("Reaction Time Region 2") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = FALSE)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT2ms, colour = Group_Status)) + ggtitle("Reaction Time Region 2") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = FALSE)
 
 
 # Model assuming normality of residuals maximal structure
@@ -197,35 +197,31 @@ descdist(alldata_IR_RT$RT2ms)
 
 #Now Let's add in individual differences
 #Import Individual difference measures
-alldata_SRS2 <- read_csv("SRS2_data/alldata_SRS2.csv")
-alldata_EQ <- read_csv("EQ_data/alldata_EQ.csv")
+Reduced_IDs_IR <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Reduced_IDs_IR.csv")
+View(Reduced_IDs_IR)
 
-all_data_join <- inner_join(alldata_IR_RT, alldata_SRS2, by = "participant")
-all_data_join <- inner_join(all_data_join, alldata_EQ, by = "participant")
+all_data_join <- inner_join(alldata_IR_RT, Reduced_IDs_IR, by = "participant")
 
-#View(all_data_join)
+
+View(all_data_join)
 
 # Scale the ID measures...
-all_data_join$total_t_score <- scale(all_data_join$total_t_score)
-all_data_join$EQ_score <- scale(all_data_join$EQ_score)
+all_data_join$SRS_total_score_raw <- scale(all_data_join$SRS_total_score_raw)
+all_data_join$SRS_total_score_t <- scale(all_data_join$SRS_total_score_t)
+all_data_join$EQ <- scale(all_data_join$EQ)
+all_data_join$Total_RAN <- scale(all_data_join$Total_RAN)
+all_data_join$Total_reading_cluster <- scale(all_data_join$Total_reading_cluster)
 
 # Model including covariates
-model_alldatacov_RT2ms <- lmer(RT2ms ~ total_t_score + EQ_score + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT2ms <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT2ms)
-
-#model failed to converge will have to simplify more
-
-
-
-
-
 
 # Let's have a look at region 3 Which is our Indirect_Replies region
 # Let's have a look at region 3 Which is our Indirect_Replies region
 
 #view(alldata_IR_RT)
 
-alldata_IR_RT %>% 
+alldata_IR_RT%>% 
   group_by(condition_number) %>%
   summarise(mean(RT3ms), sd(RT3ms))
 
@@ -239,13 +235,13 @@ alldata_IR_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Violin plots by group_status
 alldata_IR_RT %>% 
@@ -257,13 +253,13 @@ alldata_IR_RT %>%
   guides(scale = FALSE)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = FALSE)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = FALSE)
 
 
 # Model assuming normality of residuals maximal structure
@@ -276,11 +272,10 @@ model.nullRT3ms <- lmer(RT3ms ~ (1 | participant) + (1 | item_number), alldata_I
 
 anova(modelRT3ms,model.nullRT3ms)
 
-#add in group_stATUS and shows TD driving the effect
-#Maximal model with no singularity of fit error drops participant and item random effects
-modelRT3msGS <- lmer(RT3ms ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
-                     REML = TRUE) 
-summary(modelRT3msGS)
+#add in group_stATUS
+#modelRT3msGS <- lmer(RT3ms ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
+#REML = TRUE) 
+#summary(modelRT3msGS)
 
 #All the data for this model looks pretty normal.
 check_model(modelRT3ms)
@@ -289,26 +284,9 @@ qqline(residuals(modelRT3ms))
 descdist(alldata_IR_RT$RT3ms)
 
 #Now Let's add in individual differences
-#Import Individual difference measures
-alldata_SRS2 <- read_csv("SRS2_data/alldata_SRS2.csv")
-alldata_EQ <- read_csv("EQ_data/alldata_EQ.csv")
-
-all_data_join <- inner_join(alldata_IR_RT, alldata_SRS2, by = "participant")
-all_data_join <- inner_join(all_data_join, alldata_EQ, by = "participant")
-
-#View(all_data_join)
-
-# Scale the ID measures...
-all_data_join$total_t_score <- scale(all_data_join$total_t_score)
-all_data_join$EQ_score <- scale(all_data_join$EQ_score)
-
 # Model including covariates
-model_alldatacov_RT3ms <- lmer(RT3ms ~ total_t_score + EQ_score + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT3ms <- lmer(RT3ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
-
-#model failed to converge will have to simplofy more
-
-
 
 # Let's have a look at region 4 Which is our critical/ Question region
 
@@ -372,22 +350,22 @@ alldata_IR_RT %>%
 
 #model.nullR4 <- lmer(RT4ms ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_IR_RT) 
 #Maximal model with no singularity of fit error drops item random effects
-modelRT4ms <- lmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 | item_number), data = alldata_IR_RT,
+modelRT4ms <- lmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
                    REML = TRUE) 
 summary(modelRT4ms)
 
-model.nullRT4ms <- lmer(RT4ms ~ (1 + condition_number | participant) + (1 | item_number), alldata_IR_RT) 
+model.nullRT4ms <- lmer(RT4ms ~ (1 | participant) + (1 | item_number), alldata_IR_RT) 
 
 anova(modelRT4ms,model.nullRT4ms)
 
 
 #add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing.
 #Maximal model with no singularity of fit error drops item random effects
-modelRT4msGS <- lmer(RT4ms ~ condition_number + Group_Status + (1 + condition_number | participant) + (1 | item_number), data = alldata_IR_RT,
+modelRT4msGS <- lmer(RT4ms ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
                      REML = TRUE) 
 summary(modelRT4msGS)
 
-# THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
+# THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH positive CONDITIONS BEING READ SIGNIFICANTLY slower THAN negative congruent conditons!!! Whoop Whoop
 # It Worked!!!!!
 #All the data for this model looks pretty normal.
 check_model(modelRT4ms)
@@ -397,10 +375,16 @@ descdist(alldata_IR_RT$RT4ms)
 
 #Lets add ID's
 # Model including covariates
-model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + total_t_score + EQ_score + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
-
+# The difference between negative and positive driving the effect
+positive <- c(rnorm(60, mean = 1807, sd = 952))
+negative <- c(rnorm(60, mean = 1650, sd = 952))
+Neutral <- c(rnorm(60, mean = 1742, sd = 1511))
+t.test(positive, negative, paired = TRUE)
+t.test(Neutral, negative, paired = TRUE)
+t.test(positive, Neutral, paired = TRUE)
 
 
 # Let's have a look at region 5 Which is our post-critical/ Reply region
@@ -415,13 +399,13 @@ alldata_IR_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Violin plots by group_status
 alldata_IR_RT %>% 
@@ -433,13 +417,13 @@ alldata_IR_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 5") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 5") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Descriptives
 alldata_IR_RT %>% 
@@ -449,7 +433,7 @@ alldata_IR_RT %>%
 
 
 # Model assuming normality of residuals maximal structure
-#Maximal model with no singularity of fit error drops item random effects
+#singularity of fit regardless of random effect structure
 modelRT5ms <- lmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
                    REML = TRUE) 
 summary(modelRT5ms)
@@ -458,17 +442,6 @@ model.nullRT5ms <- lmer(RT5ms ~ (1 | participant) + (1 | item_number), alldata_I
 
 anova(modelRT5ms,model.nullRT5ms)
 
-#add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing mechanisms for ASC and TD.
-#Maximal model with no singularity of fit error drops item random effects
-modelRT5msGS <- lmer(RT5ms ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
-                     REML = TRUE) 
-summary(modelRT5msGS)
-
-# THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
-
-# It Worked!!!!!
-
-#anova(modelR4, model.nullR4)
 
 #All the data for this model looks pretty normal.
 check_model(modelRT5ms)
@@ -494,13 +467,13 @@ alldata_IR_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = TT, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = TT, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Violin plots by group_status
 alldata_IR_RT %>% 
@@ -512,13 +485,13 @@ alldata_IR_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_IR_RT %>% 
-  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_IR_RT %>% 
+#  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Descriptives
 alldata_IR_RT %>% 
@@ -528,8 +501,8 @@ alldata_IR_RT %>%
 
 
 # Model assuming normality of residuals maximal structure
-#Maximal model with no singularity of fit error drops item random effects
-modelTT <- lmer(TT ~ condition_number + (1 | participant) + (1 + condition_number | item_number), data = alldata_IR_RT,
+#SINGULARITY OF FIT ISSUE HERE
+modelTT <- lmer(TT ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
                 REML = TRUE) 
 summary(modelTT)
 
@@ -537,17 +510,6 @@ model.nullTT <- lmer(TT ~ (1 | participant) + (1 + condition_number | item_numbe
 
 anova(modelTT,model.nullTT)
 
-#add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing mechanisms for ASC and TD.
-#Maximal model with no singularity of fit error drops item random effects
-modelTTGS <- lmer(TT ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
-                  REML = TRUE) 
-summary(modelTTGS)
-
-# THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
-
-# It Worked!!!!!
-
-#anova(modelR4, model.nullR4)
 
 #All the data for this model looks pretty normal.
 check_model(modelTT)
@@ -562,34 +524,23 @@ descdist(alldata_IR_RT$TT)
 
 #Nothing significant with Gamma (if i did it right not sure if after family = gamma i shouldn't have (link = "log") or (link = "inverse")) 
 
-GammaRT3ms <- glmer(RT3ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
-                    family = Gamma (link = "inverse"), data = alldata_IR_RT)
+GammaRT3ms <- glmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), 
+                    family = Gamma (link = "log"), data = alldata_IR_RT)
 summary(GammaRT3ms)
 
-GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
+GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), 
                     family = Gamma (link = "inverse"), data = alldata_IR_RT)
 summary(GammaRT4ms)
 
-GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
-                    family = Gamma (link = "inverse"), data = alldata_IR_RT)
+GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), 
+                    family = Gamma (link = "log"), data = alldata_IR_RT)
 summary(GammaRT5ms)
 
-GammaRTT <- glmer(TT ~ condition_number + (1 + condition_number | participant) + (1 + condition_number | item_number), 
-                  family = Gamma (link = "inverse"), data = alldata_IR_RT)
+GammaRTT <- glmer(TT ~ condition_number + (1 | participant) + (1 | item_number), 
+                  family = Gamma (link = "log"), data = alldata_IR_RT)
 
 summary(GammaRTT)
 
 #Export a CSV of the new data set...
-write.csv(alldata_IR_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Indirect_Replies\\alldata_IR_RT.csv", row.names = TRUE)
+#write.csv(alldata_IR_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Indirect_Replies\\alldata_IR_RT.csv", row.names = TRUE)
 
-#Import ID's
-alldata_IR_RT <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Indirect_Replies/alldata_IR_RT.csv")
-alldata_EQ <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data/alldata_EQ.csv")
-alldata_SRS2 <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data/alldata_SRS2.csv")
-
-#view(alldata_EQ)
-#view(alldata_SRS2)
-
-all_data_join <- inner_join(alldata_IR_RT, alldata_EQ, by = "participant")
-all_data_join <- inner_join(all_data_join, alldata_SRS2, by = "participant")
-#view(all_data_join)
