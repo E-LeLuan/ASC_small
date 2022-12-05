@@ -151,13 +151,13 @@ alldata_Pred_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
@@ -166,16 +166,16 @@ alldata_Pred_RT %>%
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = FALSE)
+  guides(scale = none)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = FALSE)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT3ms, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = FALSE)
 
 
 # Model assuming normality of residuals maximal structure
@@ -202,20 +202,25 @@ descdist(alldata_Pred_RT$RT3ms)
 
 #Now Let's add in individual differences
 #Import Individual difference measures
-alldata_SRS2 <- read_csv("SRS2_data/alldata_SRS2.csv")
-alldata_EQ <- read_csv("EQ_data/alldata_EQ.csv")
+Reduced_IDs_Pred <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Reduced_IDs_Pred.csv")
+#View(Reduced_IDs_Pred)
 
-all_data_join <- inner_join(alldata_Pred_RT, alldata_SRS2, by = "participant")
-all_data_join <- inner_join(all_data_join, alldata_EQ, by = "participant")
+all_data_join <- inner_join(alldata_Pred_RT, Reduced_IDs_Pred, by = "participant")
+
+
+View(all_data_join)
 
 #View(all_data_join)
 
 # Scale the ID measures...
-all_data_join$total_t_score <- scale(all_data_join$total_t_score)
-all_data_join$EQ_score <- scale(all_data_join$EQ_score)
+all_data_join$SRS_total_score_raw <- scale(all_data_join$SRS_total_score_raw)
+all_data_join$SRS_total_score_t <- scale(all_data_join$SRS_total_score_t)
+all_data_join$EQ <- scale(all_data_join$EQ)
+all_data_join$Total_RAN <- scale(all_data_join$Total_RAN)
+all_data_join$Total_reading_cluster <- scale(all_data_join$Total_reading_cluster)
 
 # Model including covariates
-model_alldatacov_RT3ms <- lmer(RT3ms ~ total_t_score + EQ_score + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
 
 #model failed to converge will have to simplofy more
@@ -309,10 +314,8 @@ descdist(alldata_Pred_RT$RT4ms)
 
 #Lets add ID's
 # Model including covariates
-model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + total_t_score + EQ_score + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 + condition_number | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
-
-
 
 
 # Let's have a look at region 5 Which is our post-critical/ Reply region
@@ -327,13 +330,13 @@ alldata_Pred_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
@@ -345,13 +348,13 @@ alldata_Pred_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 5") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 5") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Descriptives
 alldata_Pred_RT %>% 
@@ -376,6 +379,11 @@ modelRT5msGS <- lmer(RT5ms ~ condition_number + Group_Status + (1 | participant)
                    REML = TRUE) 
 summary(modelRT5msGS)
 
+
+#Lets add ID's
+# Model including covariates
+model_alldatacov_RT5ms <- lmer(RT5ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT5ms)
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
 # It Worked!!!!!
@@ -391,14 +399,14 @@ descdist(alldata_Pred_RT$RT5ms)
 
 ## Let's have a look at total reading time across all regions
 
-alldata_Pred_RT <- alldata_Pred_RT %>% group_by(participant) %>%
+all_data_join <- all_data_join %>% group_by(participant) %>%
   mutate(TT = (RT1ms + RT2ms + RT3ms + RT4ms + RT5ms + RT6ms))
 
 #view(alldata_Pred_RT)
 #IT WORKED!!!!!
 #Violin plots
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = TT, colour = condition_number)) + ggtitle("Reaction Total Time") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -406,17 +414,17 @@ alldata_Pred_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = TT, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = TT, colour = condition_number)) + ggtitle("Reaction Total Time") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Violin plots by group_status
 alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Total Time") +
   labs(y = "Reading time in seconds", x = "Prediction") +
   geom_violin() +
   geom_jitter(alpha = .2, width = .1) +
@@ -424,13 +432,13 @@ alldata_Pred_RT %>%
   guides(scale = none)
 
 #Boxplt
-alldata_Pred_RT %>% 
-  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
-  labs(y = "Reading time in seconds", x = "Prediction") +
-  geom_boxplot()+  
-  geom_jitter(alpha = .2, width = .1) +
-  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
-  guides(scale = none)
+#alldata_Pred_RT %>% 
+#  ggplot(aes(x = condition_number, y = TT, colour = Group_Status)) + ggtitle("Reaction Time Region 4") +
+#  labs(y = "Reading time in seconds", x = "Prediction") +
+#  geom_boxplot()+  
+#  geom_jitter(alpha = .2, width = .1) +
+#  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+#  guides(scale = none)
 
 #Descriptives
 alldata_Pred_RT %>% 
@@ -441,19 +449,24 @@ alldata_Pred_RT %>%
 
 # Model assuming normality of residuals maximal structure
 #Maximal model with no singularity of fit error drops item random effects
-modelTT <- lmer(TT ~ condition_number + (1 | participant) + (1 + condition_number | item_number), data = alldata_Pred_RT,
+modelTT <- lmer(TT ~ condition_number + (1 | participant) + (1 | item_number), data = all_data_join,
                  REML = TRUE) 
 summary(modelTT)
 
-model.nullTT <- lmer(TT ~ (1 | participant) + (1 + condition_number | item_number), alldata_Pred_RT) 
+model.nullTT <- lmer(TT ~ (1 | participant) + (1 | item_number), all_data_join) 
 
 anova(modelTT,model.nullTT)
 
 #add in group_stATUS and shows neither group is responsible for the effect suggesting similar processing mechanisms for ASC and TD.
 #Maximal model with no singularity of fit error drops item random effects
-modelTTGS <- lmer(TT ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = alldata_Pred_RT,
+modelTTGS <- lmer(TT ~ condition_number + Group_Status + (1 | participant) + (1 | item_number), data = all_data_join,
                    REML = TRUE) 
 summary(modelTTGS)
+
+#Lets add ID's
+# Model including covariates
+model_alldatacov_TTms <- lmer(TT ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
+summary(model_alldatacov_TTms)
 
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
