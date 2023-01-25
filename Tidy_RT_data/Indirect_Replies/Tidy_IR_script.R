@@ -237,6 +237,7 @@ alldata_IR_RT%>%
   group_by(condition_number) %>%
   summarise(mean(RT3ms), sd(RT3ms))
 
+
 #Violin plots
 alldata_IR_RT %>% 
   ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
