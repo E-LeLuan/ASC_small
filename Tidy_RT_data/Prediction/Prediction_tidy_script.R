@@ -11,6 +11,7 @@ library(buildmer)
 library(performance)
 library(see)
 library(sjPlot)
+library(Hmisc)
 
 #Set seed for random number generation
 set.seed(42)
@@ -223,9 +224,6 @@ all_data_join$Total_reading_cluster <- scale(all_data_join$Total_reading_cluster
 model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
 
-#model failed to converge will have to simplofy more
-
-
 
 # Let's have a look at region 4 Which is our critical/ Question region
 
@@ -317,6 +315,13 @@ descdist(alldata_Pred_RT$RT4ms)
 model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 + condition_number | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
+# Remove total reading
+#effect remains significant when Total reading is removed suggesting total reading effects overall reading time rather than predciton.
+model_alldatacov_RT4ms_wotrt <- lmer(RT4ms ~ condition_number + SRS_total_score_t + EQ + Total_RAN + (1 + condition_number | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT4ms_wotrt)
+
+
+
 
 # Let's have a look at region 5 Which is our post-critical/ Reply region
 
@@ -331,7 +336,7 @@ alldata_Pred_RT %>%
 
 #Boxplt
 #alldata_Pred_RT %>% 
-#  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 4") +
+#  ggplot(aes(x = condition_number, y = RT5ms, colour = condition_number)) + ggtitle("Reaction Time Region 5") +
 #  labs(y = "Reading time in seconds", x = "Prediction") +
 #  geom_boxplot()+  
 #  geom_jitter(alpha = .2, width = .1) +
@@ -383,6 +388,7 @@ summary(modelRT5msGS)
 #Lets add ID's
 # Model including covariates
 model_alldatacov_RT5ms <- lmer(RT5ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
+
 summary(model_alldatacov_RT5ms)
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
@@ -485,14 +491,15 @@ descdist(alldata_Pred_RT$TT)
 ################Lognormal analysis as Weibull is closest to lognormal and gamma#############################
 #With Gamma we can include more random effects including maximal structure with random slopes for particiapnt and item 
 
-#Nothing significant with Gamma (if i did it right not sure if after family = gamma i shouldn't have (link = "log") or (link = "inverse")) 
+#Similar results with gamma (if i did it right not sure if after family = gamma i shouldn't have (link = "log") or (link = "inverse")) 
 
+#singular fit error
 GammaRT3ms <- glmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), 
                   family = Gamma (link = "inverse"), data = alldata_Pred_RT)
 summary(GammaRT3ms)
 
 GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), 
-                  family = Gamma (link = "inverse"), data = alldata_Pred_RT)
+                  family = Gamma (link = "log"), data = alldata_Pred_RT)
 summary(GammaRT4ms)
 
 GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), 

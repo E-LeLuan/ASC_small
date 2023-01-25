@@ -84,6 +84,6 @@ Pred_accuracyimp <- Pred_accuracy %>%
   distinct(participant, total_comp, total_perc, .keep_all = TRUE)
 #view(Pred_accuracyimp)
 
-write.csv (Pred_accuracyimp,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\Pred_accuracyimp", row.names = TRUE)
+#write.csv (Pred_accuracyimp,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\Pred_accuracyimp", row.names = TRUE)
 
 

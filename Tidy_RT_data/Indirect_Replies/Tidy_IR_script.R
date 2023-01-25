@@ -177,10 +177,22 @@ alldata_IR_RT %>%
 #  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
 #  guides(scale = FALSE)
 
+#Have a lookat outliers as that standard deviation is crazy out!
+ggbetweenstats(alldata_IR_RT, condition_number, RT2ms, outlier.tagging = TRUE)
+Q <- quantile(alldata_IR_RT$RT2ms, probs=c(.25, .75), na.rm = FALSE)
+#view(Q)
+iqr <- IQR(alldata_IR_RT$RT2ms)
+up <-  Q[2]+2.0*iqr # Upper Range  
+low<- Q[1]-2.0*iqr # Lo
+eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT2ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT2ms < (Q[2]+2.0*iqr))
+ggbetweenstats(eliminated, condition_number, RT2ms, outlier.tagging = TRUE) 
 
+eliminated %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT2ms), sd(RT2ms))
 # Model assuming normality of residuals maximal structure
 #Maximal model with no singularity of fit error drops participant and item random effects
-modelRT2ms <- lmer(RT2ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
+modelRT2ms <- lmer(RT2ms ~ condition_number + (1 | participant) + (1 | item_number), data = eliminated,
                    REML = TRUE) 
 summary(modelRT2ms)
 
@@ -285,7 +297,7 @@ descdist(alldata_IR_RT$RT3ms)
 
 #Now Let's add in individual differences
 # Model including covariates
-model_alldatacov_RT3ms <- lmer(RT3ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
 
 # Let's have a look at region 4 Which is our critical/ Question region
@@ -430,11 +442,23 @@ alldata_IR_RT %>%
   group_by(condition_number) %>%
   summarise(mean(RT5ms), sd(RT5ms))
 
+#Have a lookat outliers as that standard deviation is crazy out!
+ggbetweenstats(alldata_IR_RT, condition_number, RT5ms, outlier.tagging = TRUE)
+Q <- quantile(alldata_IR_RT$RT5ms, probs=c(.25, .75), na.rm = FALSE)
+#view(Q)
+iqr <- IQR(alldata_IR_RT$RT5ms)
+up <-  Q[2]+2.0*iqr # Upper Range  
+low<- Q[1]-2.0*iqr # Lo
+eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT5ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT5ms < (Q[2]+2.0*iqr))
+ggbetweenstats(eliminated, condition_number, RT5ms, outlier.tagging = TRUE) 
 
+eliminated %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
 
 # Model assuming normality of residuals maximal structure
-#singularity of fit regardless of random effect structure
-modelRT5ms <- lmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
+
+modelRT5ms <- lmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), data = eliminated,
                    REML = TRUE) 
 summary(modelRT5ms)
 
