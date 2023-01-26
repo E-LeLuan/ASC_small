@@ -512,4 +512,4 @@ GammaRTT <- glmer(TT ~ condition_number + (1 | participant) + (1 | item_number),
 summary(GammaRTT)
 
 #Export a CSV of the new data set...
-#write.csv(alldata_Pred_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
+write.csv(alldata_Pred_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Prediction\\alldata_Pred_RT.csv", row.names = TRUE)
