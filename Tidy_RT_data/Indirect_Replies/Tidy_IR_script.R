@@ -11,6 +11,7 @@ library(buildmer)
 library(performance)
 library(see)
 library(sjPlot)
+library(ggstatsplot)
 
 #Set seed for random number generation
 set.seed(42)
@@ -178,21 +179,21 @@ alldata_IR_RT %>%
 #  guides(scale = FALSE)
 
 #Have a lookat outliers as that standard deviation is crazy out!
-ggbetweenstats(alldata_IR_RT, condition_number, RT2ms, outlier.tagging = TRUE)
-Q <- quantile(alldata_IR_RT$RT2ms, probs=c(.25, .75), na.rm = FALSE)
+#ggbetweenstats(alldata_IR_RT, condition_number, RT2ms, outlier.tagging = TRUE)
+#Q <- quantile(alldata_IR_RT$RT2ms, probs=c(.25, .75), na.rm = FALSE)
 #view(Q)
-iqr <- IQR(alldata_IR_RT$RT2ms)
-up <-  Q[2]+2.0*iqr # Upper Range  
-low<- Q[1]-2.0*iqr # Lo
-eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT2ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT2ms < (Q[2]+2.0*iqr))
-ggbetweenstats(eliminated, condition_number, RT2ms, outlier.tagging = TRUE) 
+#iqr <- IQR(alldata_IR_RT$RT2ms)
+#up <-  Q[2]+2.0*iqr # Upper Range  
+#low<- Q[1]-2.0*iqr # Lo
+#eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT2ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT2ms < (Q[2]+2.0*iqr))
+#ggbetweenstats(eliminated, condition_number, RT2ms, outlier.tagging = TRUE) 
 
-eliminated %>% 
-  group_by(condition_number) %>%
-  summarise(mean(RT2ms), sd(RT2ms))
+#eliminated %>% 
+#  group_by(condition_number) %>%
+#  summarise(mean(RT2ms), sd(RT2ms))
 # Model assuming normality of residuals maximal structure
 #Maximal model with no singularity of fit error drops participant and item random effects
-modelRT2ms <- lmer(RT2ms ~ condition_number + (1 | participant) + (1 | item_number), data = eliminated,
+modelRT2ms <- lmer(RT2ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
                    REML = TRUE) 
 summary(modelRT2ms)
 
@@ -227,6 +228,10 @@ all_data_join$Total_reading_cluster <- scale(all_data_join$Total_reading_cluster
 # Model including covariates
 model_alldatacov_RT2ms <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT2ms)
+
+#Remove RAN
+model_alldatacov_RT2ms_noRAN <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT2ms_noRAN)
 
 # Let's have a look at region 3 Which is our Indirect_Replies region
 # Let's have a look at region 3 Which is our Indirect_Replies region
@@ -463,7 +468,7 @@ modelRT5ms <- lmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_numb
                    REML = TRUE) 
 summary(modelRT5ms)
 
-model.nullRT5ms <- lmer(RT5ms ~ (1 | participant) + (1 | item_number), alldata_IR_RT) 
+model.nullRT5ms <- lmer(RT5ms ~ (1 | participant) + (1 | item_number), eliminated) 
 
 anova(modelRT5ms,model.nullRT5ms)
 
@@ -533,6 +538,28 @@ summary(modelTT)
 
 model.nullTT <- lmer(TT ~ (1 | participant) + (1 + condition_number | item_number), alldata_IR_RT) 
 
+anova(model.nullTT, modelTT)
+
+#Removing outliers removes singular fit error
+ggbetweenstats(alldata_IR_RT, condition_number, TT, outlier.tagging = TRUE)
+Q <- quantile(alldata_IR_RT$TT, probs=c(.25, .75), na.rm = FALSE)
+#view(Q)
+iqr <- IQR(alldata_IR_RT$TT)
+up <-  Q[2]+2.0*iqr # Upper Range  
+low<- Q[1]-2.0*iqr # Lo
+eliminated<- subset(alldata_IR_RT, alldata_IR_RT$TT > (Q[1] - 2.0*iqr) & alldata_IR_RT$TT < (Q[2]+2.0*iqr))
+ggbetweenstats(eliminated, condition_number, TT, outlier.tagging = TRUE) 
+
+eliminated %>% 
+  group_by(condition_number) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
+# eliminated model
+modelTT <- lmer(TT ~ condition_number + (1 | participant) + (1 | item_number), data = eliminated,
+                REML = TRUE) 
+summary(modelTT)
+
+model.nullTT <- lmer(TT ~ (1 | participant) + (1 | item_number), eliminated) 
+
 anova(modelTT,model.nullTT)
 
 
@@ -554,17 +581,62 @@ GammaRT3ms <- glmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_num
 summary(GammaRT3ms)
 
 GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), 
-                    family = Gamma (link = "inverse"), data = alldata_IR_RT)
+                    family = Gamma (link = "log"), data = alldata_IR_RT)
 summary(GammaRT4ms)
+#Failed to converge lets try removing outliers
+#Removing outliers removes singular fit error
+#ggbetweenstats(alldata_IR_RT, condition_number, RT4ms, outlier.tagging = TRUE)
+Q <- quantile(alldata_IR_RT$RT4ms, probs=c(.25, .75), na.rm = FALSE)
+#view(Q)
+iqr <- IQR(alldata_IR_RT$RT4ms)
+up <-  Q[2]+2.0*iqr # Upper Range  
+low<- Q[1]-2.0*iqr # Lo
+eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT4ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT4ms < (Q[2]+2.0*iqr))
+#ggbetweenstats(eliminated, condition_number, RT4ms, outlier.tagging = TRUE) 
+
+GammaRT4ms <- glmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), 
+                    family = Gamma (link = "log"), data = eliminated)
+summary(GammaRT4ms)
+
 
 GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), 
                     family = Gamma (link = "log"), data = alldata_IR_RT)
 summary(GammaRT5ms)
+#Failed to converge lets try removing outliers
+#Removing outliers removes singular fit error
+#ggbetweenstats(alldata_IR_RT, condition_number, RT4ms, outlier.tagging = TRUE)
+Q <- quantile(alldata_IR_RT$RT5ms, probs=c(.25, .75), na.rm = FALSE)
+#view(Q)
+iqr <- IQR(alldata_IR_RT$RT5ms)
+up <-  Q[2]+2.0*iqr # Upper Range  
+low<- Q[1]-2.0*iqr # Lo
+eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT5ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT5ms < (Q[2]+2.0*iqr))
+#ggbetweenstats(eliminated, condition_number, RT4ms, outlier.tagging = TRUE) 
+
+GammaRT5ms <- glmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), 
+                    family = Gamma (link = "log"), data = eliminated)
+summary(GammaRT5ms)
+
 
 GammaRTT <- glmer(TT ~ condition_number + (1 | participant) + (1 | item_number), 
                   family = Gamma (link = "log"), data = alldata_IR_RT)
-
 summary(GammaRTT)
+
+#Failed to converge lets try removing outliers
+#Removing outliers removes singular fit error
+#ggbetweenstats(alldata_IR_RT, condition_number, RT4ms, outlier.tagging = TRUE)
+Q <- quantile(alldata_IR_RT$TT, probs=c(.25, .75), na.rm = FALSE)
+#view(Q)
+iqr <- IQR(alldata_IR_RT$TT)
+up <-  Q[2]+2.0*iqr # Upper Range  
+low<- Q[1]-2.0*iqr # Lo
+eliminated<- subset(alldata_IR_RT, alldata_IR_RT$TT > (Q[1] - 2.0*iqr) & alldata_IR_RT$TT < (Q[2]+2.0*iqr))
+#ggbetweenstats(eliminated, condition_number, RT4ms, outlier.tagging = TRUE) 
+
+GammaTT <- glmer(TT ~ condition_number + (1 | participant) + (1 | item_number), 
+                    family = Gamma (link = "log"), data = eliminated)
+summary(GammaTT)
+
 
 #Export a CSV of the new data set...
 #write.csv(alldata_IR_RT,"//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Indirect_Replies\\alldata_IR_RT.csv", row.names = TRUE)
