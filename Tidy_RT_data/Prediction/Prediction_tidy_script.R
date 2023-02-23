@@ -142,6 +142,10 @@ alldata_Pred_RT %>%
   group_by(condition_number) %>%
   summarise(mean(RT3ms), sd(RT3ms))
 
+alldata_Pred_RT %>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
+
 #Violin plots
 alldata_Pred_RT %>% 
   ggplot(aes(x = condition_number, y = RT3ms, colour = condition_number)) + ggtitle("Reaction Time Region 3") +
@@ -203,15 +207,15 @@ descdist(alldata_Pred_RT$RT3ms)
 
 #Now Let's add in individual differences
 #Import Individual difference measures
-Reduced_IDs_Pred <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Reduced_IDs_Pred.csv")
+#Reduced_IDs_Pred <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Reduced_IDs_Pred.csv")
 #View(Reduced_IDs_Pred)
+Reduced_IDs_Pred <- read_csv("Tidy_RT_data/Reduced_IDs_Pred.csv")
 
 all_data_join <- inner_join(alldata_Pred_RT, Reduced_IDs_Pred, by = "participant")
 
 
-View(all_data_join)
-
 #View(all_data_join)
+
 
 # Scale the ID measures...
 all_data_join$SRS_total_score_raw <- scale(all_data_join$SRS_total_score_raw)
@@ -224,6 +228,9 @@ all_data_join$Total_reading_cluster <- scale(all_data_join$Total_reading_cluster
 model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
 
+# Model including covariates + GS
+model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT3ms)
 
 # Let's have a look at region 4 Which is our critical/ Question region
 
@@ -268,6 +275,9 @@ alldata_Pred_RT %>%
   group_by(condition_number) %>%
   summarise(mean(RT4ms), sd(RT4ms))
 
+alldata_Pred_RT %>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT4ms), sd(RT4ms))
 
 
 # Model assuming normality of residuals maximal structure
@@ -320,7 +330,10 @@ summary(model_alldatacov_RT4ms)
 model_alldatacov_RT4ms_wotrt <- lmer(RT4ms ~ condition_number + SRS_total_score_t + EQ + Total_RAN + (1 + condition_number | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms_wotrt)
 
-
+#Lets add ID's
+# Model including covariates + GS
+model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 + condition_number | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT4ms)
 
 
 # Let's have a look at region 5 Which is our post-critical/ Reply region
@@ -366,6 +379,9 @@ alldata_Pred_RT %>%
   group_by(condition_number) %>%
   summarise(mean(RT5ms), sd(RT5ms))
 
+alldata_Pred_RT %>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
 
 
 # Model assuming normality of residuals maximal structure
@@ -390,6 +406,12 @@ summary(modelRT5msGS)
 model_alldatacov_RT5ms <- lmer(RT5ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 
 summary(model_alldatacov_RT5ms)
+
+# Model including covariates + GS
+model_alldatacov_RT5ms <- lmer(RT5ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT5ms)
+
+
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
 # It Worked!!!!!
@@ -451,7 +473,9 @@ all_data_join%>%
   group_by(condition_number) %>%
   summarise(mean(TT), sd(TT))
 
-
+all_data_join%>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(TT), sd(TT))
 
 # Model assuming normality of residuals maximal structure
 #Maximal model with no singularity of fit error drops item random effects
@@ -473,6 +497,11 @@ summary(modelTTGS)
 # Model including covariates
 model_alldatacov_TTms <- lmer(TT ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 summary(model_alldatacov_TTms)
+
+# Model including covariates + GS
+model_alldatacov_TTms <- lmer(TT ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
+summary(model_alldatacov_TTms)
+
 
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
 
