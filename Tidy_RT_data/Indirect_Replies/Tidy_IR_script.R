@@ -142,6 +142,10 @@ alldata_IR_RT %>%
   group_by(condition_number) %>%
   summarise(mean(RT2ms), sd(RT2ms))
 
+alldata_IR_RT %>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT2ms), sd(RT2ms))
+
 #Violin plots
 alldata_IR_RT %>% 
   ggplot(aes(x = condition_number, y = RT2ms, colour = condition_number)) + ggtitle("Reaction Time Region 2") +
@@ -210,13 +214,14 @@ descdist(alldata_IR_RT$RT2ms)
 
 #Now Let's add in individual differences
 #Import Individual difference measures
-Reduced_IDs_IR <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Reduced_IDs_IR.csv")
-View(Reduced_IDs_IR)
+#Reduced_IDs_IR <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/Tidy_RT_data/Reduced_IDs_IR.csv")
+#View(Reduced_IDs_IR)
+Reduced_IDs_IR <- read_csv("Tidy_RT_data/Reduced_IDs_IR.csv")
 
 all_data_join <- inner_join(alldata_IR_RT, Reduced_IDs_IR, by = "participant")
 
 
-View(all_data_join)
+#View(all_data_join)
 
 # Scale the ID measures...
 all_data_join$SRS_total_score_raw <- scale(all_data_join$SRS_total_score_raw)
@@ -228,6 +233,10 @@ all_data_join$Total_reading_cluster <- scale(all_data_join$Total_reading_cluster
 # Model including covariates
 model_alldatacov_RT2ms <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT2ms)
+
+# Model including covariates + GS
+model_alldatacov_RT2msGS <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT2msGS)
 
 #Remove RAN
 model_alldatacov_RT2ms_noRAN <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
@@ -242,6 +251,9 @@ alldata_IR_RT%>%
   group_by(condition_number) %>%
   summarise(mean(RT3ms), sd(RT3ms))
 
+alldata_IR_RT%>% 
+  group_by(condition_number,Group_Status) %>%
+  summarise(mean(RT3ms), sd(RT3ms))
 
 #Violin plots
 alldata_IR_RT %>% 
@@ -306,6 +318,10 @@ descdist(alldata_IR_RT$RT3ms)
 model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
 
+# Model including covariates + GS
+model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT3ms)
+
 # Let's have a look at region 4 Which is our critical/ Question region
 
 #Violin plots
@@ -349,6 +365,9 @@ alldata_IR_RT %>%
   group_by(condition_number) %>%
   summarise(mean(RT4ms), sd(RT4ms))
 
+alldata_IR_RT %>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT4ms), sd(RT4ms))
 
 
 # Model assuming normality of residuals maximal structure
@@ -394,6 +413,10 @@ descdist(alldata_IR_RT$RT4ms)
 #Lets add ID's
 # Model including covariates
 model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT4ms)
+
+# Model including covariates + GS
+model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
 # The difference between negative and positive driving the effect
@@ -458,10 +481,22 @@ low<- Q[1]-2.0*iqr # Lo
 eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT5ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT5ms < (Q[2]+2.0*iqr))
 ggbetweenstats(eliminated, condition_number, RT5ms, outlier.tagging = TRUE) 
 
+
 eliminated %>% 
   group_by(condition_number) %>%
   summarise(mean(RT5ms), sd(RT5ms))
+eliminated %>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT5ms), sd(RT5ms))
 
+#Violin plots by group_status
+alldata_IR_RT %>% 
+  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Reaction Time Region 5") +
+  labs(y = "Reading time in seconds", x = "Indirect_Replies") +
+  geom_violin() +
+  geom_jitter(alpha = .2, width = .1) +
+  stat_summary(fun.data = "mean_cl_boot", colour = "black") +
+  guides(scale = none)
 # Model assuming normality of residuals maximal structure
 
 modelRT5ms <- lmer(RT5ms ~ condition_number + (1 | participant) + (1 | item_number), data = eliminated,
@@ -472,12 +507,36 @@ model.nullRT5ms <- lmer(RT5ms ~ (1 | participant) + (1 | item_number), eliminate
 
 anova(modelRT5ms,model.nullRT5ms)
 
+view(eliminated)
+
+#ID's not transferred to elimnated data for some reason?
+
+eliminated <- inner_join(eliminated, Reduced_IDs_IR, by = "participant")
+
+
+# Scale the ID measures...
+eliminated$SRS_total_score_raw <- scale(eliminated$SRS_total_score_raw)
+eliminated$SRS_total_score_t <- scale(eliminated$SRS_total_score_t)
+eliminated$EQ <- scale(eliminated$EQ)
+eliminated$Total_RAN <- scale(eliminated$Total_RAN)
+eliminated$Total_reading_cluster <- scale(eliminated$Total_reading_cluster)
+
+# Model including covariates
+model_alldatacov_RT5ms <- lmer(RT5ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
+summary(model_alldatacov_RT5ms)
+
+# Model including covariates + GS
+model_alldatacov_RT5msGS <- lmer(RT5ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
+summary(model_alldatacov_RT5msGS)
 
 #All the data for this model looks pretty normal.
 check_model(modelRT5ms)
 qqnorm(residuals(modelRT5ms))
 qqline(residuals(modelRT5ms))
 descdist(alldata_IR_RT$RT5ms)
+
+
+
 
 
 ## Let's have a look at total reading time across all regions
@@ -552,7 +611,12 @@ ggbetweenstats(eliminated, condition_number, TT, outlier.tagging = TRUE)
 
 eliminated %>% 
   group_by(condition_number) %>%
-  summarise(mean(RT5ms), sd(RT5ms))
+  summarise(mean(TT), sd(TT))
+
+eliminated %>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(TT), sd(TT))
+
 # eliminated model
 modelTT <- lmer(TT ~ condition_number + (1 | participant) + (1 | item_number), data = eliminated,
                 REML = TRUE) 
@@ -562,6 +626,21 @@ model.nullTT <- lmer(TT ~ (1 | participant) + (1 | item_number), eliminated)
 
 anova(modelTT,model.nullTT)
 
+
+# again eliminated loses IDs
+eliminated <- inner_join(eliminated, Reduced_IDs_IR, by = "participant")
+
+
+# Scale the ID measures...
+eliminated$SRS_total_score_raw <- scale(eliminated$SRS_total_score_raw)
+eliminated$SRS_total_score_t <- scale(eliminated$SRS_total_score_t)
+eliminated$EQ <- scale(eliminated$EQ)
+eliminated$Total_RAN <- scale(eliminated$Total_RAN)
+eliminated$Total_reading_cluster <- scale(eliminated$Total_reading_cluster)
+
+# Model including covariates + GS
+model_alldatacov_TTGS <- lmer(TT ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
+summary(model_alldatacov_TTGS)
 
 #All the data for this model looks pretty normal.
 check_model(modelTT)
