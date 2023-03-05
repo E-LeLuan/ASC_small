@@ -232,6 +232,11 @@ summary(model_alldatacov_RT3ms)
 model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
 
+SER3 = emmeans(model_alldatacov_RT3ms, specs = 'condition_number')
+summary(SER3)
+SER3 = emmeans(model_alldatacov_RT3ms, specs = 'condition_number', 'Group_Status')
+summary(SER3)
+
 # Let's have a look at region 4 Which is our critical/ Question region
 
 #Violin plots
@@ -335,6 +340,11 @@ summary(model_alldatacov_RT4ms_wotrt)
 model_alldatacov_RT4ms <- lmer(RT4ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 + condition_number | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
+SER4 = emmeans(model_alldatacov_RT4ms, specs = 'condition_number')
+summary(SER4)
+SER4 = emmeans(model_alldatacov_RT4ms, specs = 'condition_number', 'Group_Status')
+summary(SER4)
+
 
 # Let's have a look at region 5 Which is our post-critical/ Reply region
 
@@ -410,6 +420,11 @@ summary(model_alldatacov_RT5ms)
 # Model including covariates + GS
 model_alldatacov_RT5ms <- lmer(RT5ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT5ms)
+
+SER5 = emmeans(model_alldatacov_RT5ms, specs = 'condition_number')
+summary(SER5)
+SER5 = emmeans(model_alldatacov_RT5ms, specs = 'condition_number', 'Group_Status')
+summary(SER5)
 
 
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
@@ -501,6 +516,11 @@ summary(model_alldatacov_TTms)
 # Model including covariates + GS
 model_alldatacov_TTms <- lmer(TT ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number), data = all_data_join, REML = TRUE)
 summary(model_alldatacov_TTms)
+
+SETT = emmeans(model_alldatacov_TTms, specs = 'condition_number')
+summary(SETT)
+SETT = emmeans(model_alldatacov_TTms, specs = 'condition_number', 'Group_Status')
+summary(SETT)
 
 
 # THIS IS ALL SIGNIFICANT THERE IS A DIFFERENCE WITH FACILITATED CONDITIONS BEING READ SIGNIFICANTLY FASTER THAN UNFACILITATED!!! Whoop Whoop
