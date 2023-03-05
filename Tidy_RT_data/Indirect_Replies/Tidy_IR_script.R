@@ -238,6 +238,13 @@ summary(model_alldatacov_RT2ms)
 model_alldatacov_RT2msGS <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT2msGS)
 
+view(all_data_join)
+
+SE1 = emmeans(model_alldatacov_RT2msGS, specs = 'condition_number')
+summary(SE1)
+SE2 = emmeans(model_alldatacov_RT2msGS, specs = 'condition_number', 'Group_Status')
+summary(SE2)
+
 #Remove RAN
 model_alldatacov_RT2ms_noRAN <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT2ms_noRAN)
@@ -321,6 +328,11 @@ summary(model_alldatacov_RT3ms)
 # Model including covariates + GS
 model_alldatacov_RT3ms <- lmer(RT3ms ~ condition_number + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT3ms)
+
+SE3 = emmeans(model_alldatacov_RT3ms, specs = 'condition_number')
+summary(SE3)
+SE3 = emmeans(model_alldatacov_RT3ms, specs = 'condition_number', 'Group_Status')
+summary(SE3)
 
 # Let's have a look at region 4 Which is our critical/ Question region
 
@@ -419,13 +431,16 @@ summary(model_alldatacov_RT4ms)
 model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
+SE4 = emmeans(model_alldatacov_RT4ms, specs = 'condition_number', 'Group_Status')
+summary(SE4)
+
 # The difference between negative and positive driving the effect
-positive <- c(rnorm(60, mean = 1807, sd = 952))
-negative <- c(rnorm(60, mean = 1650, sd = 952))
-Neutral <- c(rnorm(60, mean = 1742, sd = 1511))
-t.test(positive, negative, paired = TRUE)
-t.test(Neutral, negative, paired = TRUE)
-t.test(positive, Neutral, paired = TRUE)
+#positive <- c(rnorm(60, mean = 1807, sd = 952))
+#negative <- c(rnorm(60, mean = 1650, sd = 952))
+#Neutral <- c(rnorm(60, mean = 1742, sd = 1511))
+#t.test(positive, negative, paired = TRUE)
+#t.test(Neutral, negative, paired = TRUE)
+#t.test(positive, Neutral, paired = TRUE)
 
 
 # Let's have a look at region 5 Which is our post-critical/ Reply region
@@ -528,6 +543,11 @@ summary(model_alldatacov_RT5ms)
 # Model including covariates + GS
 model_alldatacov_RT5msGS <- lmer(RT5ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
 summary(model_alldatacov_RT5msGS)
+
+SE5 = emmeans(model_alldatacov_RT4ms, specs = 'condition_number')
+summary(SE5)
+SE5 = emmeans(model_alldatacov_RT4ms, specs = 'condition_number', 'Group_Status')
+summary(SE5)
 
 #All the data for this model looks pretty normal.
 check_model(modelRT5ms)
@@ -641,6 +661,11 @@ eliminated$Total_reading_cluster <- scale(eliminated$Total_reading_cluster)
 # Model including covariates + GS
 model_alldatacov_TTGS <- lmer(TT ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
 summary(model_alldatacov_TTGS)
+
+SETT = emmeans(model_alldatacov_TTGS, specs = 'condition_number')
+summary(SETT)
+SETT = emmeans(model_alldatacov_TTGS, specs = 'condition_number', 'Group_Status')
+summary(SETT)
 
 #All the data for this model looks pretty normal.
 check_model(modelTT)
