@@ -544,9 +544,14 @@ summary(model_alldatacov_RT5ms)
 model_alldatacov_RT5msGS <- lmer(RT5ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
 summary(model_alldatacov_RT5msGS)
 
-SE5 = emmeans(model_alldatacov_RT5ms, specs = 'condition_number')
+#Does my data need to be in long format to do this?
+#https://stackoverflow.com/questions/69960107/using-lmer-for-multiple-dependent-variables
+# model.test <- lmer(cbind(condition_number, Group_Status, RT5ms) ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number),
+#                   control = lmerControl(check.nobs.vs.nRE = "ignore"), data = eliminated)
+
+SE5 = emmeans(model_alldatacov_RT5msGS, specs = 'condition_number')
 summary(SE5)
-SE5 = emmeans(model_alldatacov_RT5ms, specs = 'condition_number', 'Group_Status')
+SE5 = emmeans(model_alldatacov_RT5msGS, specs = 'condition_number', 'Group_Status')
 summary(SE5)
 
 #All the data for this model looks pretty normal.
