@@ -462,45 +462,51 @@ summary(model_int4)
 anova(model_alldatacov_RT4msGS, model_int4)
 
 #Remove outliers
-ggbetweenstats(alldata_IR_RT, condition_number, RT4ms, outlier.tagging = TRUE)
-Q <- quantile(alldata_IR_RT$RT4ms, probs=c(.25, .75), na.rm = FALSE)
-#view(Q)
-iqr <- IQR(alldata_IR_RT$RT4ms)
-up <-  Q[2]+2.0*iqr # Upper Range  
-low<- Q[1]-2.0*iqr # Lo
-eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT4ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT4ms < (Q[2]+2.0*iqr))
-ggbetweenstats(eliminated, condition_number, RT4ms, outlier.tagging = TRUE) 
+#ggbetweenstats(alldata_IR_RT, condition_number, RT4ms, outlier.tagging = TRUE)
+#Q <- quantile(alldata_IR_RT$RT4ms, probs=c(.25, .75), na.rm = FALSE)
+##view(Q)
+#iqr <- IQR(alldata_IR_RT$RT4ms)
+#up <-  Q[2]+2.0*iqr # Upper Range  
+#low<- Q[1]-2.0*iqr # Lo
+#eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT4ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT4ms < (Q[2]+2.0*iqr))
+#ggbetweenstats(eliminated, condition_number, RT4ms, outlier.tagging = TRUE) 
 
 #add ids back in
-eliminated <- inner_join(eliminated, Reduced_IDs_IR, by = "participant")
+#eliminated <- inner_join(eliminated, Reduced_IDs_IR, by = "participant")
 
 
 # Scale the ID measures...
-eliminated$SRS_total_score_raw <- scale(eliminated$SRS_total_score_raw)
-eliminated$SRS_total_score_t <- scale(eliminated$SRS_total_score_t)
-eliminated$EQ <- scale(eliminated$EQ)
-eliminated$Total_RAN <- scale(eliminated$Total_RAN)
-eliminated$Total_reading_cluster <- scale(eliminated$Total_reading_cluster)
+#eliminated$SRS_total_score_raw <- scale(eliminated$SRS_total_score_raw)
+#eliminated$SRS_total_score_t <- scale(eliminated$SRS_total_score_t)
+#eliminated$EQ <- scale(eliminated$EQ)
+#eliminated$Total_RAN <- scale(eliminated$Total_RAN)
+#eliminated$Total_reading_cluster <- scale(eliminated$Total_reading_cluster)
 
+
+#Best Model
 model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
 
 #Pairwise comparisons
 library(ggpubr)
+#HOW DO I GET THE ACTUAL TEST STATISTIC THIS JUST GIVES ME SIGNIFICANCE VALUES of a WILCOXON TEST!!! UGHHHHH
 compare_means(RT4ms ~ condition_number, data = all_data_join, 
               group.by = "Group_Status")
 
-t.test(RT4ms ~ Group_Status, data = all_data_join, 
+
+# THE GROUP BY FUNCTION SERVES NO PURPOSE HERE SO IM JUST GETTING A RESULT THAT SAYS... 
+# There is no difference in reading times between participants with ASC and non-autistic participants but this is for overall 
+#reading not by condition
+wilcox.test(RT4ms ~ Group_Status, data = all_data_join, 
        group.by = "condition_number")
 
+#condition number has 3 levels so will not run how do i modify this code???
+wilcox.test(RT4ms ~ condition_number, data = all_data_join)
 
-subset(all_data_join$RT4ms, all_data_join$Group_Status == "1") %>%
-  t.test(RT4ms ~ condition_number, data = all_data_join)
-
-#wilcox test no significant difference between reading times and group
-test <- wilcox.test(all_data_join$RT4ms ~ all_data_join$Group_Status)
-test
+#THIS DOENST WORK either UGHHHHHH
+subset(all_data_join$RT4ms, all_data_join$Group_Status == "ASC") %>%
+  t.test(RT4ms ~ Group_Status, data = all_data_join)
 
 # Box plot facetted by "Group_Status"
 #p <- ggboxplot(eliminated, x = "condition_number", y = "RT4ms",
