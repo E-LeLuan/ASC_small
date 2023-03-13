@@ -103,6 +103,7 @@ alldata_IR_RT$Group_Status[alldata_IR_RT$Group_Status == 'TRUE'] <- "ASC"
 alldata_IR_RT$Group_Status[alldata_IR_RT$Group_Status == 'FALSE'] <- "TD"
 #view(alldata_IR_RT)
 
+
 #Rename condition_number to more meaningful numbers
 alldata_IR_RT$condition_number <- recode(alldata_IR_RT$condition_number, "1" = "Negative", "2" = "Positive", "3" = "Neutral")
 view(alldata_IR_RT)
@@ -203,6 +204,7 @@ summary(modelRT2ms)
 
 model.nullRT2ms <- lmer(RT3ms ~ (1 | participant) + (1 | item_number), alldata_IR_RT) 
 
+#lower AIC for null rmeove this from our paper and analysis
 anova(modelRT2ms,model.nullRT2ms)
 
 
@@ -235,10 +237,20 @@ model_alldatacov_RT2ms <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t
 summary(model_alldatacov_RT2ms)
 
 # Model including covariates + GS
-model_alldatacov_RT2msGS <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT2msGS <- lmer(RT2ms ~ condition_number + Group_Status + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT2msGS)
 
-view(all_data_join)
+SE1 = emmeans(model_alldatacov_RT2msGS, specs = 'condition_number')
+summary(SE1)
+SE2 = emmeans(model_alldatacov_RT2msGS, specs = 'condition_number', 'Group_Status')
+summary(SE2)
+
+# Model including covariates + GS and condition interaction
+model_int2 <- lmer(RT2ms ~ condition_number*Group_Status + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_int2)
+
+#model without interaction a better fit for the data
+anova(model_alldatacov_RT2msGS, model_int2)
 
 SE1 = emmeans(model_alldatacov_RT2msGS, specs = 'condition_number')
 summary(SE1)
@@ -248,6 +260,7 @@ summary(SE2)
 #Remove RAN
 model_alldatacov_RT2ms_noRAN <- lmer(RT2ms ~ Total_reading_cluster + SRS_total_score_t + EQ + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT2ms_noRAN)
+
 
 # Let's have a look at region 3 Which is our Indirect_Replies region
 # Let's have a look at region 3 Which is our Indirect_Replies region
@@ -304,6 +317,8 @@ alldata_IR_RT %>%
 modelRT3ms <- lmer(RT3ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
                    REML = TRUE) 
 summary(modelRT3ms)
+
+#AIC lower in null remove from analysis
 
 model.nullRT3ms <- lmer(RT3ms ~ (1 | participant) + (1 | item_number), alldata_IR_RT) 
 
@@ -397,6 +412,7 @@ alldata_IR_RT %>%
 #                                        item_number = col_number()))
 
 
+#lower AIC include in the analysis
 #model.nullR4 <- lmer(RT4ms ~ (1 + condition_number | participant) + (1 + condition_number | item_number), alldata_IR_RT) 
 #Maximal model with no singularity of fit error drops item random effects
 modelRT4ms <- lmer(RT4ms ~ condition_number + (1 | participant) + (1 | item_number), data = alldata_IR_RT,
@@ -422,17 +438,104 @@ check_model(modelRT4ms)
 #qqline(residuals(modelRT4ms))
 descdist(alldata_IR_RT$RT4ms)
 
+#Model including group status is exactly the same as model without so dont bother.
 #Lets add ID's
 # Model including covariates
 model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
+#lower AIC for model including group status on own without interaction. Use this one.
 # Model including covariates + GS
-model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+model_alldatacov_RT4msGS <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + Group_Status + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_alldatacov_RT4msGS)
+
+anova(model_alldatacov_RT4ms, model_alldatacov_RT4msGS)
+
+
+SE4 = emmeans(model_alldatacov_RT4msGS, specs = 'condition_number', 'Group_Status')
+summary(SE4)
+
+# Model including covariates + GS + interaction
+model_int4 <- lmer(RT4ms ~ condition_number*Group_Status + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = all_data_join, REML = TRUE)
+summary(model_int4)
+
+anova(model_alldatacov_RT4msGS, model_int4)
+
+#Remove outliers
+ggbetweenstats(alldata_IR_RT, condition_number, RT4ms, outlier.tagging = TRUE)
+Q <- quantile(alldata_IR_RT$RT4ms, probs=c(.25, .75), na.rm = FALSE)
+#view(Q)
+iqr <- IQR(alldata_IR_RT$RT4ms)
+up <-  Q[2]+2.0*iqr # Upper Range  
+low<- Q[1]-2.0*iqr # Lo
+eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT4ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT4ms < (Q[2]+2.0*iqr))
+ggbetweenstats(eliminated, condition_number, RT4ms, outlier.tagging = TRUE) 
+
+#add ids back in
+eliminated <- inner_join(eliminated, Reduced_IDs_IR, by = "participant")
+
+
+# Scale the ID measures...
+eliminated$SRS_total_score_raw <- scale(eliminated$SRS_total_score_raw)
+eliminated$SRS_total_score_t <- scale(eliminated$SRS_total_score_t)
+eliminated$EQ <- scale(eliminated$EQ)
+eliminated$Total_RAN <- scale(eliminated$Total_RAN)
+eliminated$Total_reading_cluster <- scale(eliminated$Total_reading_cluster)
+
+model_alldatacov_RT4ms <- lmer(RT4ms ~ Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + condition_number + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
 summary(model_alldatacov_RT4ms)
 
-SE4 = emmeans(model_alldatacov_RT4ms, specs = 'condition_number', 'Group_Status')
-summary(SE4)
+
+#Pairwise comparisons
+library(ggpubr)
+compare_means(RT4ms ~ condition_number, data = all_data_join, 
+              group.by = "Group_Status")
+
+t.test(RT4ms ~ Group_Status, data = all_data_join, 
+       group.by = "condition_number")
+
+
+subset(all_data_join$RT4ms, all_data_join$Group_Status == "1") %>%
+  t.test(RT4ms ~ condition_number, data = all_data_join)
+
+#wilcox test no significant difference between reading times and group
+test <- wilcox.test(all_data_join$RT4ms ~ all_data_join$Group_Status)
+test
+
+# Box plot facetted by "Group_Status"
+#p <- ggboxplot(eliminated, x = "condition_number", y = "RT4ms",
+#               color = "Group_Status", palette = "jco",
+#               add = "jitter")
+#p + stat_compare_means(aes(group = Group_Status))
+#p + stat_compare_means(aes(group = Group_Status), label = "p.signif")
+
+#compare_means(RT4ms ~ Group_Status, data = all_data_join, 
+#              group.by = "condition_number")
+
+#Difference between conditions by group
+#compare_means(RT4ms ~ Group_Status, data = all_data_join, 
+#              group.by = "condition_number")
+# Box plot facetted by "Group_Status"
+#p <- ggboxplot(all_data_join, x = "Group_Status", y = "RT4ms",
+#               color = "condition_number", palette = "jco",
+#               add = "jitter")
+#p + stat_compare_means(aes(group = condition_number))
+#p + stat_compare_means(aes(group = condition_number), label = "p.signif")
+
+#compare_means(RT4ms ~ Group_Status, data = all_data_join, 
+#              group.by = "condition_number", paired = TRUE)
+#p <- ggpaired(all_data_join, x = "Group_Status", y = "RT4ms",
+#              color = "Group_Status", palette = "jco",
+#              line.color = "gray", line.size = 0.4,
+#              facet.by = "condition_number", short.panel.labs = FALSE)
+# Use only p.format as label. Remove method name.
+#p + stat_compare_means(label = "p.signif")
+#p + labs(x = "Group Status")
+#p + labs(y = "Reading Time in ms.")
+
+eliminated %>%
+  group_by(condition_number, Group_Status) %>%
+  get_summary_stats(RT4ms, type = "mean_sd")
 
 # The difference between negative and positive driving the effect
 #positive <- c(rnorm(60, mean = 1807, sd = 952))
@@ -496,6 +599,18 @@ low<- Q[1]-2.0*iqr # Lo
 eliminated<- subset(alldata_IR_RT, alldata_IR_RT$RT5ms > (Q[1] - 2.0*iqr) & alldata_IR_RT$RT5ms < (Q[2]+2.0*iqr))
 ggbetweenstats(eliminated, condition_number, RT5ms, outlier.tagging = TRUE) 
 
+#Just looking at an interaction between condition number and group status on critical
+#region reading times
+model1a <- lmer(RT4ms ~ condition_number + Group_Status + (1 | participant) +  
+                 (1 | item_number) , data = eliminated, REML = TRUE)
+summary(model1a)
+
+model1b <- lmer(RT4ms ~ condition_number*Group_Status + (1 | participant) +  
+                 (1 | item_number) , data = eliminated, REML = TRUE)
+summary(model1b)
+
+options(ggrepel.max.overlaps = Inf)
+anova(model1a, model1b)
 
 eliminated %>% 
   group_by(condition_number) %>%
