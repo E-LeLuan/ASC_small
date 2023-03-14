@@ -3,6 +3,9 @@ library(readr)
 library(tidyverse)
 library(lme4)
 library(lmerTest)
+library(emmeans)
+library(ggdist)
+library(ggthemes)
 
 alldata_IR_RT <- read_csv("Tidy_RT_data/Indirect_Replies/alldata_IR_RT.csv", 
                           col_types = cols(RT1 = col_number(), 
@@ -80,7 +83,22 @@ eliminated %>%
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
   guides(scale = FALSE)
-
+# Boxplot just Reading information
+myplot3 <- ggboxplot(
+  eliminated, x = "condition_number", y = "RT4ms",
+  fill = "condition_number", palette = "jco", legend = "none",
+  ggtheme = theme_pubr(border = TRUE)) + 
+  labs(title = "Critical Reply Region", y = "Reading time in Milliseconds", x = "Indirect Reply Sentiment")
+myplot3
+#Raincloud plot
+eliminated %>% 
+  ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Critical Reply Region") +
+  #add violins from ggdist package
+  stat_halfeye(adjust = .5, width = .5, .width = 0, justification = -.3, point_colour = NA) + 
+  geom_boxplot(width = 0.35, outlier.color = "NA", justification = -0.35) +
+  scale_fill_fivethirtyeight() + 
+  labs(y = "Reading time in milliseconds", x = "Indirect Reply Sentiment") + 
+  coord_flip()
 
 #Region 5-> Post-Critical Wrap-Up ROI
 #Remove outliers
@@ -108,6 +126,22 @@ eliminated %>%
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
   guides(scale = none)
+# Boxplot just Reading information
+myplot3 <- ggboxplot(
+  eliminated, x = "condition_number", y = "RT5ms",
+  fill = "condition_number", palette = "jco", legend = "none",
+  ggtheme = theme_pubr(border = TRUE)) + 
+  labs(title = "Post-Critical Wrap-Up Region", y = "Reading Time in Milliseconds", x = "Indirect Reply Sentiment")
+myplot3
+#Raincloud plot
+eliminated %>% 
+  ggplot(aes(x = condition_number, y = RT5ms, colour = Group_Status)) + ggtitle("Post-Critical Wrap-Up Region") +
+  #add violins from ggdist package
+  stat_halfeye(adjust = .5, width = .5, .width = 0, justification = -.3, point_colour = NA) + 
+  geom_boxplot(width = 0.35, outlier.color = "NA", justification = -0.35) +
+  scale_fill_fivethirtyeight() + 
+  labs(y = "Reading time in milliseconds", x = "Indirect Reply Sentiment") + 
+  coord_flip()
 
 #Region TT-> Total Time accross all regions
 all_data_join <- all_data_join %>% group_by(participant) %>%
