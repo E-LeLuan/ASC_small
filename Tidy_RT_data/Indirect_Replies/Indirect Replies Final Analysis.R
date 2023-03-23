@@ -6,6 +6,8 @@ library(lmerTest)
 library(emmeans)
 library(ggdist)
 library(ggthemes)
+library(ggpubr)
+library(ggstatsplot)
 
 alldata_IR_RT <- read_csv("Tidy_RT_data/Indirect_Replies/alldata_IR_RT.csv", 
                           col_types = cols(RT1 = col_number(), 
@@ -57,8 +59,6 @@ alldata_IR_RT %>%
 
 #Region 4-> Critical Reply ROI
 #Remove outliers
-library(ggpubr)
-library(ggstatsplot)
 ggbetweenstats(all_data_join, condition_number, RT4ms, outlier.tagging = TRUE)
 Q <- quantile(all_data_join$RT4ms, probs=c(.25, .75), na.rm = FALSE)
 #view(Q)
@@ -70,6 +70,13 @@ ggbetweenstats(eliminated, condition_number, RT4ms, outlier.tagging = TRUE)
 #Model including group status interaction and IDs with ouliers removed as crazy fixations of 29,460 ms
 model_int4 <- lmer(RT4ms ~ condition_number*Group_Status + Total_reading_cluster + SRS_total_score_t + EQ + Total_RAN + (1 | participant) +  (1 | item_number) , data = eliminated, REML = TRUE)
 summary(model_int4)
+
+#compare_means(RT4ms ~ Group_Status, data = all_data_join, 
+#              group.by = "condition_number")
+#compare_means(RT4ms ~ condition_number, data = all_data_join, 
+#              group.by = "Group_Status")
+#t.test(RT4ms ~ Group_Status, data = all_data_join, group.by = "condition_number")
+
 ## Summary Stats using emmeans package
 SER41 = emmeans(model_int4, specs = 'condition_number')
 summary(SER41)

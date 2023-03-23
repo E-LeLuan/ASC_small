@@ -119,6 +119,11 @@ SER4 = emmeans(model_int4, specs = 'condition_number')
 summary(SER4)
 SER4 = emmeans(model_int4, specs = 'condition_number', 'Group_Status')
 summary(SER4)
+all_data_join%>% 
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT4ms), sd(RT4ms))
+library(jtools)
+jtools::summ(model_int4)
 #remove outliers to make plots clearer 
 Q <- quantile(all_data_join$RT4ms, probs=c(.25, .75), na.rm = FALSE)
 #view(Q)
@@ -149,8 +154,21 @@ myplot3 <- ggboxplot(
   ggtheme = theme_pubr(border = TRUE)) + 
   labs(title = "Critical Question Region", y = "Reading time in Milliseconds", x = "Prediciton")
 myplot3
+
+all_data_join %>%
+  group_by(condition_number, Group_Status) %>%
+  summarise(mean(RT4ms), sd(RT4ms))
+
+
+#library(performance)
+#check_model(model_int4)
+#check_model(model_int4)
+#qqnorm(residuals(model_int4))
+#qqline(residuals(model_int4))
+
+
 #Raincloud plot
-eliminated %>% 
+all_data_join %>% 
   ggplot(aes(x = condition_number, y = RT4ms, colour = Group_Status)) + ggtitle("Critical Question Region") +
   #add violins from ggdist package
   stat_halfeye(adjust = .5, width = .5, .width = 0, justification = -.3, point_colour = NA) + 
@@ -159,47 +177,48 @@ eliminated %>%
   labs(y = "Reading time in milliseconds", x = "Prediction") + 
   coord_flip()
 # Box plot 
-#compare_means(RT4ms ~ Group_Status, data = eliminated,
+compare_means(RT4ms ~ Group_Status, data = eliminated,
               group.by = "condition_number")
 #Difference between conditions boxplot
-#p <- ggboxplot(eliminated, x = "condition_number", y = "RT4ms",
+p <- ggboxplot(eliminated, x = "condition_number", y = "RT4ms",
                color = "Group_Status", palette = "jco",
                add = "jitter")
-#p + stat_compare_means(aes(group = condition_number))
-#p + stat_compare_means(aes(group = condition_number), label = "p.signif")
+p + stat_compare_means(aes(group = condition_number))
+p + stat_compare_means(aes(group = condition_number), label = "p.signif")
 # Create subset data lists TD
 TD_Group <- filter(all_data_join, Group_Status == "TD")
 #TD only model
 model_TD <- lmer(RT4ms ~ condition_number + Total_reading_cluster + (1 | participant) +  (1 | item_number), data = TD_Group, REML = TRUE)
 summary(model_TD)
-TD_Group <- filter(eliminated, Group_Status == "TD")
+#TD_Group <- filter(eliminated, Group_Status == "TD")
 # Boxplot just Reading information
-myplotTD <- ggboxplot(
-  TD_Group, x = "condition_number", y = "RT4ms",
-  fill = "condition_number", palette = "jco", legend = "none",
-  ggtheme = theme_pubr(border = TRUE)) + 
-  labs(title = "Critical Reply Region", y = "Reading time in Milliseconds", x = "Prediciton")
-myplotTD
+#myplotTD <- ggboxplot(
+#  eliminated, x = "condition_number", y = "RT4ms",
+#  fill = "condition_number", palette = "jco", legend = "none",
+#  ggtheme = theme_pubr(border = TRUE)) + 
+#  labs(title = "Critical Reply Region", y = "Reading time in Milliseconds", x = "Prediciton")
+#myplotTD
 # Box plot 
 compare_means(RT4ms ~ condition_number, data = TD_Group)
 #Difference between conditions boxplot
-p <- ggboxplot(TD_Group, x = "condition_number", y = "RT4ms",
-               color = "condition_number", palette = "jco",
-               add = "jitter")
-p + stat_compare_means(aes(group = condition_number))
-p + stat_compare_means(aes(group = condition_number), label = "p.signif")
+#p <- ggboxplot(TD_Group, x = "condition_number", y = "RT4ms",
+#               color = "condition_number", palette = "jco",
+#               add = "jitter")
+#p + stat_compare_means(aes(group = condition_number))
+#p + stat_compare_means(aes(group = condition_number), label = "p.signif")
 
 # Create subset data lists ASC
 ASC_Group <- filter(all_data_join, Group_Status == "ASC")
 model_ASC <- lmer(RT4ms ~ condition_number + Total_reading_cluster + (1 | participant) +  (1 | item_number), data = ASC_Group, REML = TRUE)
 summary(model_ASC)
 ASC_Group <- filter(eliminated, Group_Status == "ASC")
-myplotASC <- ggboxplot(
-  TD_Group, x = "condition_number", y = "RT4ms",
-  fill = "condition_number", palette = "jco", legend = "none",
-  ggtheme = theme_pubr(border = TRUE)) + 
-  labs(title = "Critical Reply Region", y = "Reading time in Milliseconds", x = "Prediciton")
-myplotASC
+compare_means(RT4ms ~ condition_number, data = ASC_Group)
+#myplotASC <- ggboxplot(
+#  eliminated, x = "condition_number", y = "RT4ms",
+#  fill = "condition_number", palette = "jco", legend = "none",
+#  ggtheme = theme_pubr(border = TRUE)) + 
+#  labs(title = "Critical Reply Region", y = "Reading time in Milliseconds", x = "Prediciton")
+#myplotASC
 
 
 
@@ -287,6 +306,9 @@ all_data_join %>%
   geom_jitter(alpha = .2, width = .1) +
   stat_summary(fun.data = "mean_cl_boot", colour = "black") +
   guides(scale = none)
+
+
+
 
 #remove outliers to make plots clearer 
 Q <- quantile(all_data_join$TT, probs=c(.25, .75), na.rm = FALSE)

@@ -12,25 +12,25 @@ library(ggthemes)
 library(ggpubr)
 library(ggstatsplot)
 
-Reduced_IDs_Preds_Pred <- read_csv("Tidy_RT_data/Reduced_IDs_Preds_Pred.csv", 
+Reduced_IDs_Pred <- read_csv("Tidy_RT_data/Reduced_IDs_Pred.csv", 
                              col_types = cols(participant = col_number(), 
                                               SRS_total_score_raw = col_number(), 
                                               SRS_total_score_t = col_number(), 
                                               EQ = col_number(), Total_RAN = col_number(), 
                                               Total_reading_cluster = col_number()))
-#View(Reduced_IDs_Preds_Pred)
+#View(Reduced_IDs_Pred)
 
-Reduced_IDs_Preds_Pred <- Reduced_IDs_Preds_Pred%>%
+Reduced_IDs_Pred <- Reduced_IDs_Pred%>%
   mutate(Group_Status = participant <= 30)
 
 # Rename TRUE FALSE to more meaningful labels.
-Reduced_IDs_Preds_Pred$Group_Status[Reduced_IDs_Preds_Pred$Group_Status == 'TRUE'] <- "ASC"
-Reduced_IDs_Preds_Pred$Group_Status[Reduced_IDs_Preds_Pred$Group_Status == 'FALSE'] <- "TD"
-#view(Reduced_IDs_Preds_Pred)
+Reduced_IDs_Pred$Group_Status[Reduced_IDs_Pred$Group_Status == 'TRUE'] <- "ASC"
+Reduced_IDs_Pred$Group_Status[Reduced_IDs_Pred$Group_Status == 'FALSE'] <- "TD"
+#view(Reduced_IDs_Pred)
 
 #Remove row 61 as missing data if you wanted to remove a columnjust remove the , so [-61]
-Reduced_IDs_Preds_Pred <- Reduced_IDs_Preds_Pred[-61,]
-Reduced_IDs_Preds_Pred <- Reduced_IDs_Preds_Pred[-41,]
+Reduced_IDs_Pred <- Reduced_IDs_Pred[-61,]
+Reduced_IDs_Pred <- Reduced_IDs_Pred[-41,]
 
 # Scale the ID measures...
 #all_data_join$SRS_total_score_raw <- scale(all_data_join$SRS_total_score_raw)
