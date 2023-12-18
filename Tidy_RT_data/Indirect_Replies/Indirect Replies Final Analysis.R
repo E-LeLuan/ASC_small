@@ -17,7 +17,7 @@ alldata_IR_RT <- read_csv("Tidy_RT_data/Indirect_Replies/alldata_IR_RT.csv",
                                            RT2ms = col_number(), RT3ms = col_number(), 
                                            RT4ms = col_number(), RT5ms = col_number(), 
                                            RT6ms = col_number(), TT = col_number()))
-#View(alldata_IR_RT)
+View(alldata_IR_RT)
 
 #Add Individual Difference Measures
 Reduced_IDs_IR <- read_csv("Tidy_RT_data/Reduced_IDs_IR.csv", 
@@ -25,15 +25,21 @@ Reduced_IDs_IR <- read_csv("Tidy_RT_data/Reduced_IDs_IR.csv",
                                             SRS_total_score_t = col_number(), 
                                             EQ = col_number(), Total_RAN = col_number(), 
                                             Total_reading_cluster = col_number()))
+
 #Combined ID's with Reaction Time Data
 all_data_join <- inner_join(alldata_IR_RT, Reduced_IDs_IR, by = "participant")
-#View(all_data_join)
+View(all_data_join)
 # Scale the ID measures...
 all_data_join$SRS_total_score_raw <- scale(all_data_join$SRS_total_score_raw)
 all_data_join$SRS_total_score_t <- scale(all_data_join$SRS_total_score_t)
 all_data_join$EQ <- scale(all_data_join$EQ)
 all_data_join$Total_RAN <- scale(all_data_join$Total_RAN)
 all_data_join$Total_reading_cluster <- scale(all_data_join$Total_reading_cluster)
+
+all_data_join = select(all_data_join, -Group_Status.y)
+all_data_join <- rename(all_data_join, Group_Status = Group_Status.x)
+
+#view(all_data_join)
 
 #Lets have a look at the models we have reported (note: Tidy_IR_sript.R in Indirect_Replies folder has more exploration of the data)
 
