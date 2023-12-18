@@ -1,7 +1,8 @@
 #Remove extra data to put all ID's together and reduce file Size
 #Remove extra data to put all ID's together and reduce file Size
 library(readr)
-alldata_SRS2 <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data/alldata_SRS2.csv")
+alldata_SRS2 <- read_csv("SRS2_data/alldata_SRS2.csv")
+#alldata_SRS2 <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data/alldata_SRS2.csv")
 View(alldata_SRS2)
 
 library(tidyverse)

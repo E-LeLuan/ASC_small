@@ -1,6 +1,7 @@
 #Remove extra data to put all ID's together and reduce file Size
 library(readr)
-alldata_EQ <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data/alldata_EQ.csv")
+#alldata_EQ <- read_csv("//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data/alldata_EQ.csv")
+alldata_EQ <- read_csv("EQ_data/alldata_EQ.csv")
 View(alldata_EQ)
 
 library(tidyverse)
@@ -8,9 +9,17 @@ library(tidyverse)
 EQscore <- alldata_EQ[ , c("participant", "EQ_score")]
 
 EQscore <- EQscore %>% 
-  distinct(participant, EQ_score, .keep_all = TRUE)
+  distinct(participant, .keep_all = TRUE)
 
-write.csv (EQscore,"//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data\\EQscore", row.names = TRUE)
+#messed up with htis code as also removes multiple entrys of the same EQ score even if different participants.
+# EQscore <- EQscore %>% 
+#  distinct(participant, EQ_score, .keep_all = TRUE)
+
+#Writing to home desktop
+write.csv (EQscore,"C:/Users/eliza/Desktop/ASC_small/EQ_data\\EQscore", row.names = TRUE)
+
+#Writing to university desktop
+#write.csv (EQscore,"//nask.man.ac.uk/home$/Desktop/ASC_small/EQ_data\\EQscore", row.names = TRUE)
 
 view(EQscore)
 
@@ -18,9 +27,17 @@ view(EQscore)
 # any human error element. 
 
 library(readr)
+
 alldata_EQ <- read_csv("EQ_data/alldata_EQ.csv", 
                        col_types = cols(EQ_score = col_number()))
 View(alldata_EQ)
+
+reducedEQ <- alldata_EQ[ , c("participant", "EQ_score", "Group_Status")]
+
+reducedEQ <- reducedEQ %>% 
+  distinct(participant, .keep_all = TRUE)
+
+View(reducedEQ)
 
 library(tidyverse)
 library(rstatix)
