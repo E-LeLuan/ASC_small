@@ -12,10 +12,11 @@ SRS2totalscore <- alldata_SRS2[ , c("participant", "total_RAW_score", "total_t_s
 view(SRS2totalscore)
 
 SRS2totalscoresimp <- SRS2totalscore %>% 
-  distinct(participant, total_RAW_score, total_t_score, overall_clinical_range, .keep_all = TRUE)
+  distinct(participant, .keep_all = TRUE)
 view(SRS2totalscoresimp)
 
-write.csv (SRS2totalscoresimp,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\SRS2totaltscore", row.names = TRUE)
+write.csv (SRS2totalscoresimp,"C:/Users/eliza/Desktop/ASC_small/SRS2_data\\SRS2totaltscore")
+#write.csv (SRS2totalscoresimp,"//nask.man.ac.uk/home$/Desktop/ASC_small/SRS2_data\\SRS2totaltscore", row.names = TRUE)
 
 #This leaves us with 59 lines instead of 3835. Now we can simply transfer this over to our spreadsheet with copy paste. Removes 
 # any human error element. 

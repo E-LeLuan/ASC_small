@@ -27,13 +27,15 @@ Reduced_IDs_IR <- Reduced_IDs_IR%>%
 
 # Rename TRUE FALSE to more meaningful labels.
 Reduced_IDs_IR$Group_Status[Reduced_IDs_IR$Group_Status == 'TRUE'] <- "ASC"
-Reduced_IDs_IR$Group_Status[Reduced_IDs_IR$Group_Status == 'FALSE'] <- "TD"
+Reduced_IDs_IR$Group_Status[Reduced_IDs_IR$Group_Status == 'FALSE'] <- "NON-ASC"
 view(Reduced_IDs_IR)
 
 #Remove row 61 as missing data if you wanted to remove a columnjust remove the , so [-61]
 Reduced_IDs_IR <- Reduced_IDs_IR[-61,]
 Reduced_IDs_IR <- Reduced_IDs_IR[-41,]
-#view(Reduced_IDs_IR)
+view(Reduced_IDs_IR)
+
+write.csv(Reduced_IDs_IR,"C:/Users/eliza/Desktop/ASC_small/Tidy_RT_data\\Reduced_IDs_IR", row.names = TRUE)
 
 library(ggpubr)
 #EQ
